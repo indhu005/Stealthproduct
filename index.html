@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bolto — Dashboard Redesign</title>
+<meta name="description" content="A redesigned Overview dashboard for Bolto's payroll/HR product, with annotated design rationale.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2213%22 font-size=%2213%22>⚡</text></svg>">
+<style>
+  :root{
+    --bg:#F7F6F3;
+    --surface:#FFFFFF;
+    --surface-sunken:#F0EFEB;
+    --border:#E6E3DC;
+    --text:#17181C;
+    --text-muted:#6B6C74;
+    --text-faint:#9A9A9F;
+    --accent:#3B46D6;
+    --accent-ink:#2A3399;
+    --accent-soft:#EDEEFB;
+    --accent-soft-border:#D8DAF5;
+    --success:#1C7C54;
+    --success-soft:#E6F3EC;
+    --warning:#9C6A0A;
+    --warning-soft:#FBF0DD;
+    --critical:#B13A3A;
+    --critical-soft:#FBEBEA;
+    --shadow: 0 1px 2px rgba(23,24,28,0.04), 0 8px 24px -12px rgba(23,24,28,0.12);
+  }
+  :root[data-theme="dark"]{
+    --bg:#131317;
+    --surface:#1B1C21;
+    --surface-sunken:#202127;
+    --border:#2C2D34;
+    --text:#F1F1EF;
+    --text-muted:#A3A3AC;
+    --text-faint:#71717A;
+    --accent:#7781F2;
+    --accent-ink:#C3C7FA;
+    --accent-soft:#242749;
+    --accent-soft-border:#363B6E;
+    --success:#4CAE82;
+    --success-soft:#19281F;
+    --warning:#D9A84B;
+    --warning-soft:#2C2416;
+    --critical:#E0766F;
+    --critical-soft:#2E1C1B;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#131317;
+      --surface:#1B1C21;
+      --surface-sunken:#202127;
+      --border:#2C2D34;
+      --text:#F1F1EF;
+      --text-muted:#A3A3AC;
+      --text-faint:#71717A;
+      --accent:#7781F2;
+      --accent-ink:#C3C7FA;
+      --accent-soft:#242749;
+      --accent-soft-border:#363B6E;
+      --success:#4CAE82;
+      --success-soft:#19281F;
+      --warning:#D9A84B;
+      --warning-soft:#2C2416;
+      --critical:#E0766F;
+      --critical-soft:#2E1C1B;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:1120px;
+    margin:0 auto;
+    padding:56px 24px 96px;
+  }
+  .eyebrow{
+    font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    margin:0 0 14px;
+  }
+  h1{
+    font-size:30px;
+    line-height:1.2;
+    font-weight:650;
+    letter-spacing:-0.01em;
+    margin:0 0 10px;
+    text-wrap:balance;
+  }
+  .sub{
+    font-size:15px;
+    line-height:1.55;
+    color:var(--text-muted);
+    max-width:62ch;
+    margin:0 0 40px;
+  }
+  .sub b{color:var(--text); font-weight:600;}
+
+  /* ---- mockup frame ---- */
+  .frame-outer{
+    overflow-x:auto;
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    border:1px solid var(--border);
+  }
+  .frame{
+    display:flex;
+    min-width:960px;
+    background:var(--surface);
+    border-radius:16px;
+    overflow:hidden;
+  }
+
+  /* ---- sidebar ---- */
+  .sidebar{
+    width:232px;
+    flex:0 0 232px;
+    background:var(--surface-sunken);
+    border-right:1px solid var(--border);
+    padding:20px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:4px 8px 16px;
+    font-weight:700;
+    font-size:16px;
+    letter-spacing:-0.01em;
+  }
+  .logo svg{flex:0 0 auto;}
+  .search{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:8px 9px 8px 10px;
+    font-size:12.5px;
+    color:var(--text-faint);
+    margin-bottom:14px;
+    position:relative;
+  }
+  .search .spark{color:var(--accent); flex:0 0 auto;}
+  .search .q{flex:1; min-width:0;}
+  .search .kbd{
+    font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+    font-size:10px;
+    color:var(--text-faint);
+    background:var(--surface-sunken);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:1px 5px;
+    flex:0 0 auto;
+  }
+  .search-hint{
+    font-size:11px;
+    color:var(--text-faint);
+    margin:-8px 2px 16px;
+    line-height:1.4;
+  }
+  .grouplabel{
+    font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+    font-size:10px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    padding:14px 10px 6px;
+  }
+  .grouplabel:first-of-type{padding-top:0;}
+  .navitem{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:7px 10px;
+    border-radius:7px;
+    font-size:13px;
+    font-weight:500;
+    color:var(--text-muted);
+  }
+  .navitem svg{opacity:.75; flex:0 0 auto;}
+  .navitem.active{
+    background:var(--accent-soft);
+    color:var(--accent-ink);
+    font-weight:600;
+  }
+  .navitem.active svg{opacity:1;}
+  .sidebar-foot{
+    margin-top:auto;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:10px;
+    border-top:1px solid var(--border);
+  }
+  .avatar{
+    width:26px;height:26px;border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent-ink));
+    flex:0 0 auto;
+  }
+  .sidebar-foot .who{font-size:12.5px; font-weight:600;}
+  .sidebar-foot .role{font-size:11px; color:var(--text-faint);}
+
+  /* ---- main ---- */
+  .main{
+    flex:1 1 auto;
+    padding:26px 30px 34px;
+    min-width:0;
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .topbar h2{
+    font-size:19px;
+    font-weight:650;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .icon-btn{
+    width:30px;height:30px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--border);
+    color:var(--text-muted);
+  }
+  .topbar-icons{display:flex; gap:8px;}
+
+  .badge-num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:16px;height:16px;border-radius:50%;
+    background:var(--accent);
+    color:#fff;
+    font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+    font-size:9.5px;font-weight:700;
+    flex:0 0 auto;
+  }
+
+  /* hero */
+  .hero{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:24px;
+    background:linear-gradient(180deg, var(--accent-soft), var(--surface) 130%);
+    border:1px solid var(--accent-soft-border);
+    border-radius:14px;
+    padding:22px 26px;
+    margin-bottom:8px;
+  }
+  .hero-label{
+    display:flex; align-items:center; gap:8px;
+    font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+    font-size:11px; letter-spacing:.07em; text-transform:uppercase;
+    color:var(--accent-ink);
+    margin-bottom:10px;
+  }
+  .hero-amount{
+    font-size:38px;
+    font-weight:700;
+    letter-spacing:-0.02em;
+    font-variant-numeric:tabular-nums;
+    line-height:1;
+    margin-bottom:8px;
+  }
+  .hero-meta{
+    font-size:13px;
+    color:var(--text-muted);
+  }
+  .hero-meta b{color:var(--text); font-weight:600;}
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    padding:2px 8px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:600;
+    margin-left:8px;
+  }
+  .pill.warning{background:var(--warning-soft); color:var(--warning);}
+  .btn{
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    padding:9px 16px;
+    font-family:inherit;
+  }
+  .btn.primary{background:var(--accent); color:#fff;}
+  .btn.primary:hover{background:var(--accent-ink);}
+  .btn.ghost{background:transparent; color:var(--text-muted); padding:9px 10px;}
+  .btn.ghost:hover{color:var(--critical);}
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+  /* secondary stat row */
+  .statrow{
+    display:flex;
+    gap:0;
+    margin:18px 2px 26px;
+  }
+  .stat{
+    flex:1;
+    padding:0 20px;
+    border-right:1px solid var(--border);
+  }
+  .stat:first-child{padding-left:4px;}
+  .stat:last-child{border-right:none;}
+  .stat .n{
+    font-size:19px;
+    font-weight:650;
+    font-variant-numeric:tabular-nums;
+    letter-spacing:-0.01em;
+  }
+  .stat .l{font-size:12px; color:var(--text-faint); margin-top:2px;}
+
+  /* attention list */
+  .section-head{
+    display:flex;align-items:center;gap:8px;
+    margin-bottom:10px;
+  }
+  .section-head h3{font-size:14px; font-weight:650; margin:0;}
+  .count-chip{
+    font-size:11px; font-weight:700;
+    color:var(--text-muted);
+    background:var(--surface-sunken);
+    border-radius:999px;
+    padding:1px 7px;
+  }
+  .attn-list{
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    margin-bottom:26px;
+  }
+  .attn-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px 16px;
+    border-bottom:1px solid var(--border);
+    background:var(--surface);
+  }
+  .attn-row:last-child{border-bottom:none;}
+  .dot{
+    width:8px;height:8px;border-radius:50%;
+    flex:0 0 auto;
+  }
+  .dot.critical{background:var(--critical);}
+  .dot.warning{background:var(--warning);}
+  .dot.neutral{background:var(--text-faint);}
+  .attn-body{flex:1; min-width:0;}
+  .attn-title{font-size:13.5px; font-weight:600;}
+  .attn-sub{font-size:12.5px; color:var(--text-muted); margin-top:1px;}
+  .attn-actions{display:flex; align-items:center; gap:4px; flex:0 0 auto;}
+  .btn.small{padding:7px 13px; font-size:12.5px;}
+
+  /* week strip */
+  .week{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+  }
+  .day{
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 12px;
+    min-height:64px;
+  }
+  .day .dname{font-size:11px; color:var(--text-faint); margin-bottom:6px;}
+  .day .dnum{font-size:13px; font-weight:650; margin-bottom:8px;}
+  .chip-person{
+    font-size:10.5px;
+    background:var(--accent-soft);
+    color:var(--accent-ink);
+    border-radius:5px;
+    padding:2px 6px;
+    display:inline-block;
+    margin-bottom:3px;
+  }
+
+  /* legend */
+  .legend{
+    margin-top:36px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px 32px;
+  }
+  .legend h3{
+    font-size:13px;
+    font-weight:650;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--text-faint);
+    margin:0 0 16px;
+    grid-column:1/-1;
+  }
+  .legend-item{
+    display:flex;
+    gap:11px;
+  }
+  .legend-item .badge-num{margin-top:2px;}
+  .legend-item p{
+    margin:0;
+    font-size:13.5px;
+    line-height:1.55;
+    color:var(--text-muted);
+  }
+  .legend-item p b{color:var(--text); font-weight:600;}
+
+  .altstate{
+    margin-top:14px;
+  }
+  .altstate-label{
+    font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    margin:0 0 8px 2px;
+  }
+  .attn-list.empty .attn-row{
+    background:var(--accent-soft);
+  }
+  .attn-list.empty .attn-sub{color:var(--accent-ink);}
+
+  .theme-toggle{
+    position:fixed;
+    top:20px;
+    right:20px;
+    width:34px;height:34px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--text-muted);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+
+  @media (max-width:720px){
+    .legend{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+  <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M13.5 9.5A6 6 0 1 1 6.5 2.5A5 5 0 0 0 13.5 9.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+</button>
+
+<div class="wrap">
+  <p class="eyebrow">Redesign — Overview dashboard</p>
+  <h1>Same data, a clear order of what matters.</h1>
+  <p class="sub">The original gives five stats equal weight, splits one roster across two sections, and puts "approve" and "reject" close enough to mis-click. This pass keeps the content but <b>gives the one time-boxed number a hero spot, collapses the duplicate people list, and separates destructive actions from confirming ones.</b> Numbered markers below point to each change.</p>
+
+  <div class="frame-outer">
+    <div class="frame">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="logo">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M9 1L2.5 9.5H7.5L6.5 15L13.5 6H8.5L9 1Z" fill="var(--accent)"/></svg>
+          bolto
+        </div>
+        <div class="search">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.3"/><path d="M11 11L14.5 14.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span class="q">Search or ask&nbsp;AI</span>
+          <svg class="spark" width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.2 6.8L14 8L9.2 9.2L8 14L6.8 9.2L2 8L6.8 6.8L8 2Z" fill="currentColor"/></svg>
+          <span class="kbd">⌘K</span>
+        </div>
+        <div class="search-hint"><span class="badge-num">6</span>&nbsp; one box: find a record or ask it a question</div>
+
+        <div class="grouplabel">Workspace</div>
+        <div class="navitem active">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="currentColor"/><rect x="9" y="2" width="5" height="5" rx="1" fill="currentColor"/><rect x="2" y="9" width="5" height="5" rx="1" fill="currentColor"/><rect x="9" y="9" width="5" height="5" rx="1" fill="currentColor"/></svg>
+          Overview
+        </div>
+        <div class="navitem">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="2.5" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Tasks
+        </div>
+        <div class="navitem">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3" width="11" height="10.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M2.5 6.5H13.5" stroke="currentColor" stroke-width="1.2"/></svg>
+          Calendar
+        </div>
+
+        <div class="grouplabel">People <span class="badge-num" style="margin-left:4px;">3</span></div>
+        <div class="navitem">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M2.5 13.5C2.5 10.5 5 9 8 9C11 9 13.5 10.5 13.5 13.5" stroke="currentColor" stroke-width="1.2"/></svg>
+          Directory
+        </div>
+        <div class="navitem">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3.5" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M2.5 6.5H13.5" stroke="currentColor" stroke-width="1.2"/></svg>
+          Time off
+        </div>
+        <div class="navitem">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2V14M11.5 4.5C11.5 3.4 10 2.5 8 2.5C6 2.5 4.5 3.4 4.5 4.6C4.5 7 11.5 6 11.5 8.9C11.5 10.3 10 11.3 8 11.3C6 11.3 4.5 10.3 4.5 9.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Payroll
+        </div>
+
+        <div class="grouplabel">Organization</div>
+        <div class="navitem">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="1.2" stroke="currentColor" stroke-width="1.2"/><path d="M5.5 5.5H10.5M5.5 8H10.5M5.5 10.5H8.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          Documents
+        </div>
+        <div class="navitem">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M8 2.5V4M8 12V13.5M13.5 8H12M4 8H2.5M11.8 4.2L10.7 5.3M5.3 10.7L4.2 11.8M11.8 11.8L10.7 10.7M5.3 5.3L4.2 4.2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          Settings
+        </div>
+
+        <div class="sidebar-foot">
+          <div class="avatar"></div>
+          <div>
+            <div class="who">Omaid Wakily</div>
+            <div class="role">Admin</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN -->
+      <div class="main">
+        <div class="topbar">
+          <h2>Welcome back, Omaid</h2>
+          <div class="topbar-icons">
+            <div class="icon-btn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.2 6.8L14 8L9.2 9.2L8 14L6.8 9.2L2 8L6.8 6.8L8 2Z" fill="currentColor"/></svg>
+            </div>
+            <div class="icon-btn">?</div>
+          </div>
+        </div>
+
+        <!-- HERO -->
+        <div class="hero">
+          <div>
+            <div class="hero-label">
+              <span class="badge-num">1</span>
+              Next payroll
+            </div>
+            <div class="hero-amount">$21,300</div>
+            <div class="hero-meta">87 employees · due <b>Mar 24</b><span class="pill warning">in 6 days</span></div>
+          </div>
+          <button class="btn primary">Review payroll →</button>
+        </div>
+
+        <!-- SECONDARY STATS -->
+        <div class="statrow">
+          <div class="stat"><div class="n">170</div><div class="l">Active workforce</div></div>
+          <div class="stat"><div class="n">4</div><div class="l">Onboarding</div></div>
+          <div class="stat"><div class="n">14</div><div class="l">Pending invoices</div></div>
+          <div class="stat"><div class="n">$315.5k</div><div class="l">Spend this month</div></div>
+        </div>
+
+        <!-- ATTENTION LIST -->
+        <div class="section-head">
+          <h3>Needs your attention</h3>
+          <span class="count-chip">3</span>
+          <span class="badge-num" style="margin-left:2px;">4</span>
+        </div>
+        <div class="attn-list">
+          <div class="attn-row">
+            <div class="dot critical"></div>
+            <div class="attn-body">
+              <div class="attn-title">EWN file missing — Jane Doe</div>
+              <div class="attn-sub">This blocks her payment in the Mar 24 run</div>
+            </div>
+            <div class="attn-actions"><button class="btn small primary">Resolve</button></div>
+          </div>
+          <div class="attn-row">
+            <div class="dot warning"></div>
+            <div class="attn-body">
+              <div class="attn-title">W-4 forms missing</div>
+              <div class="attn-sub">3 new hires haven't submitted tax forms</div>
+            </div>
+            <div class="attn-actions"><button class="btn small" style="background:var(--warning-soft); color:var(--warning);">Remind</button></div>
+          </div>
+          <div class="attn-row">
+            <div class="dot neutral"></div>
+            <div class="attn-body">
+              <div class="attn-title">Time off request — Jane Doe</div>
+              <div class="attn-sub">3 days, Jul 2 – Jul 4</div>
+            </div>
+            <div class="attn-actions">
+              <span class="badge-num" style="margin-right:6px;">5</span>
+              <button class="btn ghost small">Decline</button>
+              <button class="btn small primary">Approve</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="altstate">
+          <div class="altstate-label">On a quiet day — the same slot, nothing to approve</div>
+          <div class="attn-list empty">
+            <div class="attn-row">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex:0 0 auto;"><path d="M8 2L9.2 6.8L14 8L9.2 9.2L8 14L6.8 9.2L2 8L6.8 6.8L8 2Z" fill="var(--accent)"/></svg>
+              <div class="attn-body">
+                <div class="attn-title">You're all caught up</div>
+                <div class="attn-sub">Ask AI to draft this week's payroll summary for the team</div>
+              </div>
+              <div class="attn-actions"><button class="btn small" style="background:var(--surface); border:1px solid var(--accent-soft-border); color:var(--accent-ink);">Ask AI →</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEEK -->
+        <div class="section-head"><h3>This week</h3></div>
+        <div class="week">
+          <div class="day"><div class="dname">MON 1</div><span class="chip-person">John D.</span></div>
+          <div class="day"><div class="dname">TUE 2</div></div>
+          <div class="day"><div class="dname">WED 3</div></div>
+          <div class="day"><div class="dname">THU 4</div></div>
+          <div class="day"><div class="dname">FRI 5</div><span class="chip-person">Holiday</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <h3>What changed, and why</h3>
+    <div class="legend-item">
+      <span class="badge-num">1</span>
+      <p><b>One hero metric, not five equal tiles.</b> Next payroll is the only number on the page with a deadline attached, so it gets the large type, the tint, and the primary action — the rest move to a quiet row underneath.</p>
+    </div>
+    <div class="legend-item">
+      <span class="badge-num">2</span>
+      <p><b>Section labels read as labels, not buttons.</b> "Workspace," "People," "Organization" are now uppercase and muted, sitting above real nav items, so scanning the sidebar doesn't require clicking to learn what's a group versus a page.</p>
+    </div>
+    <div class="legend-item">
+      <span class="badge-num">3</span>
+      <p><b>Team Directory, Employees, and Contractors became one "People" group.</b> The original put the same person in two places under two sections; one roster with a type filter removes the question of where to look.</p>
+    </div>
+    <div class="legend-item">
+      <span class="badge-num">4</span>
+      <p><b>"Quick actions" and "Tasks" merged into one "Needs attention" list.</b> Each row now carries a real severity — blocking payroll, informational, awaiting a decision — instead of four identical gray buttons that don't say which one is urgent.</p>
+    </div>
+    <div class="legend-item">
+      <span class="badge-num">5</span>
+      <p><b>Approve and decline are no longer equal-weight icons side by side.</b> Approve is the filled, primary action; decline is a quieter text button with real space from it — so confirming and rejecting someone's time off aren't one misplaced click apart.</p>
+    </div>
+    <div class="legend-item">
+      <span class="badge-num">6</span>
+      <p><b>"Start an AI chat" moved from a full-width bar into labeled search, plus an empty-state nudge.</b> The permanent entry point is the always-visible "Search or ask AI" field — text, not just an icon, so it doesn't rely on anyone knowing the shortcut. The second entry point only appears when Needs Attention is empty: instead of a blank "all caught up" state, that slot offers an AI suggestion at the one moment it isn't competing with something more urgent.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  var root = document.documentElement;
+  var btn = document.getElementById('themeToggle');
+  var stored = localStorage.getItem('theme');
+  if (stored) root.setAttribute('data-theme', stored);
+  btn.addEventListener('click', function(){
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var current = root.getAttribute('data-theme') || (prefersDark ? 'dark' : 'light');
+    var next = current === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+</script>
+
+</body>
+</html>
