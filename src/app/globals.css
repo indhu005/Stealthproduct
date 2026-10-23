@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+:root {
+  --color-bg: #f7f6f3;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #f0efeb;
+  --color-border: #e6e3dc;
+  --color-text: #17181c;
+  --color-muted: #6b6c74;
+  --color-faint: #9a9a9f;
+  --color-accent: #3b46d6;
+  --color-accent-ink: #2a3399;
+  --color-accent-soft: #edeefb;
+  --color-accent-soft-border: #d8daf5;
+  --color-success: #1c7c54;
+  --color-success-soft: #e6f3ec;
+  --color-warning: #9c6a0a;
+  --color-warning-soft: #fbf0dd;
+  --color-critical: #b13a3a;
+  --color-critical-soft: #fbebea;
+  --shadow-card: 0 1px 2px rgba(23, 24, 28, 0.04), 0 8px 24px -12px rgba(23, 24, 28, 0.12);
+}
+
+:root[data-theme="dark"] {
+  --color-bg: #131317;
+  --color-surface: #1b1c21;
+  --color-surface-sunken: #202127;
+  --color-border: #2c2d34;
+  --color-text: #f1f1ef;
+  --color-muted: #a3a3ac;
+  --color-faint: #71717a;
+  --color-accent: #7781f2;
+  --color-accent-ink: #c3c7fa;
+  --color-accent-soft: #242749;
+  --color-accent-soft-border: #363b6e;
+  --color-success: #4cae82;
+  --color-success-soft: #19281f;
+  --color-warning: #d9a84b;
+  --color-warning-soft: #2c2416;
+  --color-critical: #e0766f;
+  --color-critical-soft: #2e1c1b;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #131317;
+    --color-surface: #1b1c21;
+    --color-surface-sunken: #202127;
+    --color-border: #2c2d34;
+    --color-text: #f1f1ef;
+    --color-muted: #a3a3ac;
+    --color-faint: #71717a;
+    --color-accent: #7781f2;
+    --color-accent-ink: #c3c7fa;
+    --color-accent-soft: #242749;
+    --color-accent-soft-border: #363b6e;
+    --color-success: #4cae82;
+    --color-success-soft: #19281f;
+    --color-warning: #d9a84b;
+    --color-warning-soft: #2c2416;
+    --color-critical: #e0766f;
+    --color-critical-soft: #2e1c1b;
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-surface-sunken: var(--color-surface-sunken);
+  --color-border: var(--color-border);
+  --color-text: var(--color-text);
+  --color-muted: var(--color-muted);
+  --color-faint: var(--color-faint);
+  --color-accent: var(--color-accent);
+  --color-accent-ink: var(--color-accent-ink);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-accent-soft-border: var(--color-accent-soft-border);
+  --color-success: var(--color-success);
+  --color-success-soft: var(--color-success-soft);
+  --color-warning: var(--color-warning);
+  --color-warning-soft: var(--color-warning-soft);
+  --color-critical: var(--color-critical);
+  --color-critical-soft: var(--color-critical-soft);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
