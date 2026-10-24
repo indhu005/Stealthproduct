@@ -17,11 +17,11 @@ export function LaptopFrame({
   aside?: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen w-full flex-wrap items-center justify-center gap-10 bg-[#eceef1] p-8">
-      <div className="flex flex-col items-center">
+    <div className="flex min-h-screen w-full flex-wrap items-center justify-center gap-10 overflow-x-auto bg-[#eceef1] p-8">
+      <div className="flex shrink-0 flex-col items-center">
         <div className="rounded-[20px] bg-[#1a1b1f] p-3 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.45)]">
           <div
-            className="relative h-[800px] max-h-[80vh] w-[1280px] max-w-[90vw] overflow-hidden rounded-[8px] bg-bg"
+            className="relative h-[800px] max-h-[80vh] w-[1280px] min-w-[1000px] max-w-[90vw] overflow-hidden rounded-[8px] bg-bg"
             style={{ transform: "translateZ(0)" }}
           >
             <div className="h-full overflow-y-auto">{children}</div>

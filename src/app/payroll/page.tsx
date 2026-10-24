@@ -281,7 +281,7 @@ export default function PayrollPage() {
         {stage === "approved" && "Payroll approved"}
       </div>
 
-      <div className="mb-6 flex items-center gap-6 border-b border-border pb-4">
+      <div className="mb-6 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-border pb-4">
         <div className="flex items-center gap-2">
           <h2 className="text-[21px] font-bold tracking-tight">Payroll</h2>
           <span className="rounded-full border border-border px-2.5 py-1 text-[11px] font-semibold text-faint">Concept</span>
