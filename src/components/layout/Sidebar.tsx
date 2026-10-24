@@ -118,6 +118,7 @@ const searchablePages: SearchItem[] = [
   { label: "Payroll overview", meta: "Page", href: "/payroll" },
   { label: "Draft payroll", meta: "Page", href: "/payroll" },
   { label: "Review payroll", meta: "Page", href: "/payroll" },
+  { label: "Time off requests", meta: "Page", href: "/time-off" },
 ];
 
 const searchableEmployees: SearchItem[] = [
@@ -128,25 +129,35 @@ const searchableEmployees: SearchItem[] = [
   { label: "Tom Becker", meta: "Employee", href: "/payroll" },
 ];
 
-const suggestedQuestions = ["Why is payroll blocked?", "When is next payroll?"];
+const suggestedQuestions = ["Why is payroll blocked?", "When is next payroll?", "Any pending time off?"];
 
-function answerFor(question: string): { text: string; actionLabel: string } {
+function answerFor(question: string): { text: string; actionLabel: string; href: string } {
   const q = question.toLowerCase();
   if (q.includes("block") || q.includes("dev")) {
     return {
       text: "Dev Patel moved from WA to CA on Oct 15, so payroll needs his California tax form (DE 4). It blocks Friday's payroll until it arrives. Bolto is handling company registration (est. Nov 3).",
       actionLabel: "Open resolver",
+      href: "/payroll",
     };
   }
   if (q.includes("when") || q.includes("next payroll") || q.includes("due")) {
     return {
       text: "The next payroll run is Friday, Oct 30, covering the Oct 12–25 pay period.",
       actionLabel: "View payroll",
+      href: "/payroll",
+    };
+  }
+  if (q.includes("time off") || q.includes("pto") || q.includes("vacation")) {
+    return {
+      text: "3 time off requests are waiting on review: Jane Doe and Luis Ortega are routine, and Maya Chen's request would put her PTO balance negative.",
+      actionLabel: "Review requests",
+      href: "/time-off",
     };
   }
   return {
-    text: "I don't have an answer for that yet in this concept — try asking what's blocking payroll or when it's due.",
+    text: "I don't have an answer for that yet in this concept — try asking what's blocking payroll, when it's due, or about pending time off.",
     actionLabel: "Go to payroll",
+    href: "/payroll",
   };
 }
 
@@ -311,7 +322,7 @@ function SearchAI() {
               <button
                 onClick={() => {
                   setOpen(false);
-                  router.push("/payroll");
+                  router.push(answerFor(askedQuestion).href);
                 }}
                 className="mt-3 rounded-lg bg-accent px-3 py-2 text-[12.5px] font-semibold text-white hover:bg-accent-hover"
               >
@@ -352,7 +363,7 @@ export function Sidebar({ active }: { active?: string }) {
       <NavItem href="/" icon={icons.people} disabled>
         Directory
       </NavItem>
-      <NavItem href="/" icon={icons.timeoff} disabled>
+      <NavItem href="/time-off" icon={icons.timeoff} active={active === "time-off"}>
         Time off
       </NavItem>
       <NavItem href="/payroll" icon={icons.payroll} active={active === "payroll"}>

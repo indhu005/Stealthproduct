@@ -84,13 +84,19 @@ export default function Home() {
             <div className="text-[13.5px] font-semibold">Time off request — Jane Doe</div>
             <div className="mt-0.5 text-[12.5px] text-muted">3 days, Jul 2 – Jul 4</div>
           </div>
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" size="small" disabled>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/time-off"
+              className="appearance-none rounded-xl bg-transparent px-3.5 py-1.5 text-[12.5px] font-semibold text-muted transition-colors hover:text-critical"
+            >
               Decline
-            </Button>
-            <Button size="small" disabled>
+            </Link>
+            <Link
+              href="/time-off"
+              className="appearance-none rounded-xl bg-accent px-3.5 py-1.5 text-[12.5px] font-semibold text-white shadow-[0_8px_20px_-6px_rgba(47,98,245,0.45)] transition-colors hover:bg-accent-hover"
+            >
               Approve
-            </Button>
+            </Link>
           </div>
         </div>
       </Card>
@@ -101,9 +107,10 @@ export default function Home() {
           This is the shared shell and component set — <span className="font-semibold text-text">Button</span>,{" "}
           <span className="font-semibold text-text">Card</span>, <span className="font-semibold text-text">Badge</span>,{" "}
           <span className="font-semibold text-text">Sidebar</span>/<span className="font-semibold text-text">Topbar</span>.
-          The <span className="font-semibold text-text">Payroll</span> flow above is live — click &ldquo;Review
-          payroll&rdquo; or the sidebar. The remaining buttons in this Overview are still disabled: they&rsquo;re
-          part of the static shell, not wired to a flow yet.
+          The <span className="font-semibold text-text">Payroll</span> and{" "}
+          <span className="font-semibold text-text">Time off</span> flows above are live — click &ldquo;Review
+          payroll,&rdquo; the time off request, or the sidebar. The remaining buttons in this Overview are still
+          disabled: they&rsquo;re part of the static shell, not wired to a flow yet.
         </p>
       </Card>
     </AppShell>
