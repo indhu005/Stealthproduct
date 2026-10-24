@@ -110,7 +110,7 @@ function reducer(state: IntegrationState, action: Action): IntegrationState {
 
 export default function IntegrationPage() {
   const [state, dispatch] = useReducer(reducer, initialIntegrationState);
-  const [tab, setTab] = useState<Tab>("test");
+  const [tab, setTab] = useState<Tab>("connect");
   const [activeIssueId, setActiveIssueId] = useState<string | null>(null);
   const [pauseOpen, setPauseOpen] = useState(false);
   const [edgeCases, setEdgeCases] = useState<EdgeCaseToggles>({
@@ -129,7 +129,7 @@ export default function IntegrationPage() {
     setEdgeCases({ accessExpired: false, retryFails: false, rateLimited: false, connectionFails: false });
     setActiveIssueId(null);
     setPauseOpen(false);
-    setTab("test");
+    setTab("connect");
   }
 
   const activeIssue: SyncIssue | null = state.test.issues.find((i) => i.recordId === activeIssueId) ?? null;
@@ -191,18 +191,24 @@ export default function IntegrationPage() {
           <StaticStepCard
             title="Connect your ERP"
             summary={`Signed in as ${INTEGRATION_ADMIN_EMAIL} via company login. Connected to ${SYSTEM_NAME} in sandbox — nothing touches live payroll at this stage.`}
+            nextLabel="Continue to permissions"
+            onContinue={() => setTab("permissions")}
           />
         )}
         {tab === "permissions" && (
           <StaticStepCard
             title="Review permissions"
             summary={`Reads: employee records, pay groups, work locations. Writes: payroll results, pay statements. Access can be revoked anytime; every change is logged and kept for ${state.auditRetentionMonths} months. All 3 entities included (US, Canada, UK).`}
+            nextLabel="Approve and continue"
+            onContinue={() => setTab("mapfields")}
           />
         )}
         {tab === "mapfields" && (
           <StaticStepCard
             title="Map fields"
             summary="38 fields matched automatically with high confidence. 2 fields needed review and were resolved before the test sync ran."
+            nextLabel="Run a test sync"
+            onContinue={() => setTab("test")}
           />
         )}
         {tab === "test" && (
@@ -212,6 +218,8 @@ export default function IntegrationPage() {
           <StaticStepCard
             title="Go live"
             summary={`Mapping complete, blocking issues resolved, approver ${PAYROLL_ADMIN} chosen, rollback plan acknowledged. Pilot started with ${state.pilotSize} employees (Austin office).`}
+            nextLabel="Start pilot"
+            onContinue={() => setTab("monitor")}
           />
         )}
         {tab === "monitor" && (
