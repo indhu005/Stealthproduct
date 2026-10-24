@@ -113,6 +113,22 @@ export default function Home() {
           disabled: they&rsquo;re part of the static shell, not wired to a flow yet.
         </p>
       </Card>
+
+      <Card className="mt-4 flex items-center justify-between gap-4 p-5">
+        <div>
+          <div className="font-mono text-[11px] uppercase tracking-wider text-faint">New hire preview</div>
+          <p className="mt-1.5 max-w-[52ch] text-[13.5px] leading-relaxed text-muted">
+            A separate, phone-shaped concept: the new-hire <span className="font-semibold text-text">Onboarding</span> flow —
+            checklist, step forms, scripted AI help, and a short product tour.
+          </p>
+        </div>
+        <Link
+          href="/onboarding/welcome"
+          className="shrink-0 appearance-none rounded-xl border border-border bg-surface px-4 py-2.5 text-[13px] font-semibold text-text transition-colors hover:bg-surface-sunken"
+        >
+          Preview onboarding →
+        </Link>
+      </Card>
     </AppShell>
     </LaptopFrame>
   );

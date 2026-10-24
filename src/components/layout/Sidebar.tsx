@@ -119,6 +119,7 @@ const searchablePages: SearchItem[] = [
   { label: "Draft payroll", meta: "Page", href: "/payroll" },
   { label: "Review payroll", meta: "Page", href: "/payroll" },
   { label: "Time off requests", meta: "Page", href: "/time-off" },
+  { label: "Employee onboarding (preview)", meta: "Page", href: "/onboarding/welcome" },
 ];
 
 const searchableEmployees: SearchItem[] = [
