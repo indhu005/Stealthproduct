@@ -128,8 +128,8 @@ export default function PayrollPage() {
   const phoneWidget = (
     <div className="flex w-[260px] flex-col items-center">
       <div className="mb-2 text-center text-[11px] font-semibold uppercase tracking-wider text-faint">Dev&rsquo;s phone</div>
-      <div className="rounded-[40px] bg-[#1a1b1f] p-2.5 shadow-card">
-        <div className="flex min-h-[460px] flex-col overflow-hidden rounded-[30px] bg-white">
+      <div className="w-full rounded-[40px] bg-[#1a1b1f] p-2.5 shadow-card">
+        <div className="flex w-full min-h-[460px] flex-col overflow-hidden rounded-[30px] bg-white">
           {/* Status bar */}
           <div className="relative flex items-center justify-between px-4 pb-1 pt-2.5 text-[10px] font-semibold text-[#17181c]">
             <span>9:41</span>
