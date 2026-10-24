@@ -23,10 +23,10 @@ function NavItem({
   disabled?: boolean;
   children: React.ReactNode;
 }) {
-  const classes = `flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium ${
+  const classes = `flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium transition-colors ${
     active
-      ? "bg-accent-soft font-semibold text-accent-ink [&_svg]:opacity-100"
-      : "text-muted [&_svg]:opacity-75"
+      ? "bg-accent-soft-border font-semibold text-accent-ink [&_svg]:opacity-100"
+      : "text-text [&_svg]:opacity-70"
   } ${disabled ? "cursor-default opacity-40" : "hover:bg-surface"}`;
 
   if (disabled) {
@@ -150,7 +150,7 @@ export function Sidebar({ active }: { active?: string }) {
       <NavItem href="/" icon={icons.timeoff} disabled>
         Time off
       </NavItem>
-      <NavItem href="/" icon={icons.payroll} disabled>
+      <NavItem href="/payroll" icon={icons.payroll} active={active === "payroll"}>
         Payroll
       </NavItem>
 
@@ -162,8 +162,8 @@ export function Sidebar({ active }: { active?: string }) {
         Settings
       </NavItem>
 
-      <div className="mt-auto flex items-center gap-2.5 border-t border-border p-2.5">
-        <div className="h-6.5 w-6.5 shrink-0 rounded-full bg-gradient-to-br from-accent to-accent-ink" />
+      <div className="mt-3.5 flex items-center gap-2.5 rounded-lg border border-border bg-surface p-2.5">
+        <div className="h-6.5 w-6.5 shrink-0 rounded-full bg-accent" />
         <div>
           <div className="text-[12.5px] font-semibold">Omaid Wakily</div>
           <div className="text-[11px] text-faint">Admin</div>

@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { AppShell } from "@/components/layout/AppShell";
+import { LaptopFrame } from "@/components/layout/LaptopFrame";
 import { Topbar } from "@/components/layout/Topbar";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -13,10 +15,11 @@ const stats = [
 
 export default function Home() {
   return (
+    <LaptopFrame>
     <AppShell active="overview">
       <Topbar title="Welcome back, Omaid" />
 
-      <Card className="mb-2 flex items-end justify-between gap-6 bg-gradient-to-b from-accent-soft to-surface p-6">
+      <Card className="mb-2 flex items-end justify-between gap-6 bg-accent-soft p-6">
         <div>
           <div className="mb-2.5 font-mono text-[11px] uppercase tracking-wider text-accent-ink">
             Next payroll
@@ -29,7 +32,12 @@ export default function Home() {
             <Pill tone="warning">in 6 days</Pill>
           </div>
         </div>
-        <Button disabled>Review payroll →</Button>
+        <Link
+          href="/payroll"
+          className="appearance-none rounded-lg bg-accent px-4 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-accent-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+        >
+          Review payroll →
+        </Link>
       </Card>
 
       <div className="my-4.5 mx-0.5 flex">
@@ -92,11 +100,13 @@ export default function Home() {
         <p className="mt-2 max-w-[60ch] text-[13.5px] leading-relaxed text-muted">
           This is the shared shell and component set — <span className="font-semibold text-text">Button</span>,{" "}
           <span className="font-semibold text-text">Card</span>, <span className="font-semibold text-text">Badge</span>,{" "}
-          <span className="font-semibold text-text">Sidebar</span>/<span className="font-semibold text-text">Topbar</span> —
-          that the two interactive flows will be built on once they&rsquo;re picked. Buttons above are disabled on
-          purpose: they&rsquo;re part of the static shell, not a flow yet.
+          <span className="font-semibold text-text">Sidebar</span>/<span className="font-semibold text-text">Topbar</span>.
+          The <span className="font-semibold text-text">Payroll</span> flow above is live — click &ldquo;Review
+          payroll&rdquo; or the sidebar. The remaining buttons in this Overview are still disabled: they&rsquo;re
+          part of the static shell, not wired to a flow yet.
         </p>
       </Card>
     </AppShell>
+    </LaptopFrame>
   );
 }

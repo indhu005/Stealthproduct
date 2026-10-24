@@ -8,10 +8,10 @@ export function AppShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen w-full overflow-x-auto bg-surface">
-      <div className="flex min-w-[960px] flex-1">
-        <Sidebar active={active} />
-        <div className="min-w-0 flex-1 bg-bg p-7.5">{children}</div>
+    <div className="flex h-full w-full bg-surface">
+      <Sidebar active={active} />
+      <div className="min-w-0 flex-1 bg-bg p-7.5">
+        <div className="mx-auto max-w-[980px]">{children}</div>
       </div>
     </div>
   );

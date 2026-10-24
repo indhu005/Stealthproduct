@@ -1,67 +1,72 @@
 @import "tailwindcss";
 
+/* Exact values from "Bolto Design System.png" (section 01 Tokens). Dark-mode
+   values are derived — the source design system is light-only. */
 :root {
-  --color-bg: #f7f6f3;
+  --color-bg: #ffffff;
   --color-surface: #ffffff;
-  --color-surface-sunken: #f0efeb;
-  --color-border: #e6e3dc;
-  --color-text: #17181c;
-  --color-muted: #6b6c74;
-  --color-faint: #9a9a9f;
-  --color-accent: #3b46d6;
-  --color-accent-ink: #2a3399;
-  --color-accent-soft: #edeefb;
-  --color-accent-soft-border: #d8daf5;
-  --color-success: #1c7c54;
-  --color-success-soft: #e6f3ec;
-  --color-warning: #9c6a0a;
-  --color-warning-soft: #fbf0dd;
-  --color-critical: #b13a3a;
-  --color-critical-soft: #fbebea;
-  --shadow-card: 0 1px 2px rgba(23, 24, 28, 0.04), 0 8px 24px -12px rgba(23, 24, 28, 0.12);
+  --color-surface-sunken: #fafafc;
+  --color-border: #ebebf0; /* Line */
+  --color-text: #201e1d; /* Ink */
+  --color-muted: #8a8fa0; /* Muted */
+  --color-faint: #b2b6c2;
+  --color-accent: #2f62f5; /* Blue 600 — primary action, logo */
+  --color-accent-hover: #2049d6; /* Blue 700 — hover, pressed */
+  --color-accent-ink: #1a3bb0; /* Blue 800 — links, text on tint */
+  --color-accent-soft: #e9eeff; /* Blue 100 — hover tint, AI card */
+  --color-accent-soft-border: #d6e2ff; /* Blue 200 — active nav, selected */
+  --color-success: #3f9a2a;
+  --color-success-soft: #e8f5e0;
+  --color-warning: #e07a1f;
+  --color-warning-soft: #fdf0e3;
+  --color-critical: #d92d3a;
+  --color-critical-soft: #fde8ea;
+  --shadow-card: 0 1px 2px rgba(26, 59, 176, 0.06), 0 12px 40px -16px rgba(26, 59, 176, 0.14);
 }
 
 :root[data-theme="dark"] {
-  --color-bg: #131317;
-  --color-surface: #1b1c21;
-  --color-surface-sunken: #202127;
-  --color-border: #2c2d34;
-  --color-text: #f1f1ef;
-  --color-muted: #a3a3ac;
-  --color-faint: #71717a;
-  --color-accent: #7781f2;
-  --color-accent-ink: #c3c7fa;
-  --color-accent-soft: #242749;
-  --color-accent-soft-border: #363b6e;
-  --color-success: #4cae82;
-  --color-success-soft: #19281f;
-  --color-warning: #d9a84b;
-  --color-warning-soft: #2c2416;
-  --color-critical: #e0766f;
-  --color-critical-soft: #2e1c1b;
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+  --color-bg: #15161b;
+  --color-surface: #1c1d24;
+  --color-surface-sunken: #212228;
+  --color-border: #2c2d36;
+  --color-text: #f1f1f0;
+  --color-muted: #a3a7b5;
+  --color-faint: #71747f;
+  --color-accent: #5c86ff;
+  --color-accent-hover: #83a2ff;
+  --color-accent-ink: #b7c6ff;
+  --color-accent-soft: #212a4d;
+  --color-accent-soft-border: #334076;
+  --color-success: #5fba48;
+  --color-success-soft: #1a2a16;
+  --color-warning: #e99a4e;
+  --color-warning-soft: #2e2214;
+  --color-critical: #e8707c;
+  --color-critical-soft: #30191b;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 40px -16px rgba(0, 0, 0, 0.5);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --color-bg: #131317;
-    --color-surface: #1b1c21;
-    --color-surface-sunken: #202127;
-    --color-border: #2c2d34;
-    --color-text: #f1f1ef;
-    --color-muted: #a3a3ac;
-    --color-faint: #71717a;
-    --color-accent: #7781f2;
-    --color-accent-ink: #c3c7fa;
-    --color-accent-soft: #242749;
-    --color-accent-soft-border: #363b6e;
-    --color-success: #4cae82;
-    --color-success-soft: #19281f;
-    --color-warning: #d9a84b;
-    --color-warning-soft: #2c2416;
-    --color-critical: #e0766f;
-    --color-critical-soft: #2e1c1b;
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+    --color-bg: #15161b;
+    --color-surface: #1c1d24;
+    --color-surface-sunken: #212228;
+    --color-border: #2c2d36;
+    --color-text: #f1f1f0;
+    --color-muted: #a3a7b5;
+    --color-faint: #71747f;
+    --color-accent: #5c86ff;
+    --color-accent-hover: #83a2ff;
+    --color-accent-ink: #b7c6ff;
+    --color-accent-soft: #212a4d;
+    --color-accent-soft-border: #334076;
+    --color-success: #5fba48;
+    --color-success-soft: #1a2a16;
+    --color-warning: #e99a4e;
+    --color-warning-soft: #2e2214;
+    --color-critical: #e8707c;
+    --color-critical-soft: #30191b;
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 40px -16px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -74,6 +79,7 @@
   --color-muted: var(--color-muted);
   --color-faint: var(--color-faint);
   --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
   --color-accent-ink: var(--color-accent-ink);
   --color-accent-soft: var(--color-accent-soft);
   --color-accent-soft-border: var(--color-accent-soft-border);
