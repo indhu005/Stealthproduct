@@ -1,7 +1,7 @@
 import type { EligibilityFields, Issue } from "@/lib/onboarding/types";
 import { issueFor } from "@/lib/onboarding/derive";
 import { SelectField, TextField, CheckboxField } from "@/components/onboarding/Field";
-import { Banner } from "@/components/onboarding/ui";
+import { Banner, DemoAutofillButton } from "@/components/onboarding/ui";
 
 // Sensitive step: SSN, date of birth, and signature are collected here but
 // never read by the AI help panel — this screen offers official links and
@@ -20,6 +20,23 @@ export function EligibilityStep({
   const f = (id: string) => issueFor(issues, id);
   return (
     <>
+      <DemoAutofillButton
+        onClick={() =>
+          onChange({
+            legalName: "Jordan Rivera",
+            street: "214 Congress Ave",
+            city: "Austin",
+            state: "TX",
+            zip: "78701",
+            dob: "04/12/1996",
+            citizenshipStatus: "citizen",
+            ssn: "000-00-0000",
+            signatureName: "Jordan Rivera",
+            confirmed: true,
+          })
+        }
+      />
+
       <Banner tone="neutral" className="mb-4">
         Federal law requires employers to confirm you&rsquo;re authorized to work in the US. Your employer will review your documents
         within 3 business days of your start date.

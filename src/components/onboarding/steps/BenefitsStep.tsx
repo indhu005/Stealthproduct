@@ -1,5 +1,6 @@
 import type { BenefitChoice, BenefitsFields, Issue } from "@/lib/onboarding/types";
 import { issueFor } from "@/lib/onboarding/derive";
+import { DemoAutofillButton } from "@/components/onboarding/ui";
 
 const choiceLabel: Record<BenefitChoice, string> = { enroll: "Enroll", waive: "Waive", decide_later: "Decide later" };
 
@@ -51,6 +52,8 @@ export function BenefitsStep({
   const f = (id: string) => issueFor(issues, id);
   return (
     <>
+      <DemoAutofillButton onClick={() => onChange({ medical: "enroll", dentalVision: "enroll", retirement401k: "decide_later" })} />
+
       <BenefitCard
         title="Medical"
         blurb="Covers doctor visits, prescriptions, and hospital care."

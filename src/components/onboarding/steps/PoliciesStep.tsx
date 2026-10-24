@@ -5,6 +5,7 @@ import type { Issue, PoliciesFields } from "@/lib/onboarding/types";
 import { POLICY_DOCS } from "@/lib/onboarding/data";
 import { issueFor } from "@/lib/onboarding/derive";
 import { CheckboxField } from "@/components/onboarding/Field";
+import { DemoAutofillButton } from "@/components/onboarding/ui";
 
 export function PoliciesStep({
   fields,
@@ -25,6 +26,10 @@ export function PoliciesStep({
 
   return (
     <>
+      <DemoAutofillButton
+        onClick={() => onChange({ readIds: POLICY_DOCS.map((d) => d.id), acknowledged: true })}
+      />
+
       <div className="mb-4 flex flex-col gap-2">
         {POLICY_DOCS.map((doc) => {
           const read = fields.readIds.includes(doc.id);

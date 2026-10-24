@@ -1,7 +1,7 @@
 import type { Issue, TaxFields } from "@/lib/onboarding/types";
 import { issueFor } from "@/lib/onboarding/derive";
 import { RadioGroupField, TextField, CheckboxField } from "@/components/onboarding/Field";
-import { AiCard, Banner } from "@/components/onboarding/ui";
+import { AiCard, Banner, DemoAutofillButton } from "@/components/onboarding/ui";
 
 export function TaxStep({
   fields,
@@ -17,6 +17,17 @@ export function TaxStep({
   const f = (id: string) => issueFor(issues, id);
   return (
     <>
+      <DemoAutofillButton
+        onClick={() =>
+          onChange({
+            filingStatus: "single_or_mfs",
+            multipleJobs: "no",
+            signatureName: "Jordan Rivera",
+            confirmed: true,
+          })
+        }
+      />
+
       <Banner tone="neutral" className="mb-4">
         <span className="mr-1" aria-hidden="true">
           ℹ

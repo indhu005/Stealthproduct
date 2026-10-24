@@ -1,7 +1,7 @@
 import type { DepositFields, Issue } from "@/lib/onboarding/types";
 import { issueFor } from "@/lib/onboarding/derive";
 import { SelectField, TextField, CheckboxField } from "@/components/onboarding/Field";
-import { AiCard, Banner } from "@/components/onboarding/ui";
+import { AiCard, Banner, DemoAutofillButton } from "@/components/onboarding/ui";
 
 // Sensitive step: routing/account numbers are never read by the AI help
 // panel (see ai.ts's SafeReviewInput) — this component's "Not sure?" links
@@ -51,7 +51,7 @@ export function DepositStep({
 
   return (
     <>
-      <button
+      <DemoAutofillButton
         onClick={() =>
           onChange({
             bankName: "Lone Star Credit Union",
@@ -60,10 +60,7 @@ export function DepositStep({
             accountType: "checking",
           })
         }
-        className="mb-4 self-start rounded-md border border-dashed border-accent-soft-border px-2 py-1 text-[11px] font-semibold text-accent-ink"
-      >
-        Demo: autofill
-      </button>
+      />
 
       <AiCard
         prompt="Need help finding your routing number? I can show where it is on a check. I never see the numbers you type."

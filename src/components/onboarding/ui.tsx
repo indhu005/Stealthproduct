@@ -111,6 +111,17 @@ export function AiCard({ prompt, caption, ctaLabel, onClick }: { prompt: string;
   );
 }
 
+export function DemoAutofillButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="mb-4 rounded-md border border-dashed border-accent-soft-border px-2 py-1 text-[11px] font-semibold text-accent-ink"
+    >
+      Demo: autofill
+    </button>
+  );
+}
+
 export function SparkleIcon({ className = "" }: { className?: string }) {
   return (
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className={`shrink-0 ${className}`} aria-hidden="true">

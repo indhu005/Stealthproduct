@@ -1,6 +1,7 @@
 import type { Issue, PersonalFields } from "@/lib/onboarding/types";
 import { issueFor } from "@/lib/onboarding/derive";
 import { TextField } from "@/components/onboarding/Field";
+import { DemoAutofillButton } from "@/components/onboarding/ui";
 
 export function PersonalStep({
   fields,
@@ -16,6 +17,22 @@ export function PersonalStep({
   const f = (id: string) => issueFor(issues, id);
   return (
     <>
+      <DemoAutofillButton
+        onClick={() =>
+          onChange({
+            legalName: "Jordan Rivera",
+            preferredName: "Jordan",
+            dob: "04/12/1996",
+            street: "214 Congress Ave",
+            city: "Austin",
+            state: "TX",
+            zip: "78701",
+            phone: "(512) 555-0142",
+            emergencyContactName: "Alex Rivera",
+          })
+        }
+      />
+
       <TextField label="Legal name" value={fields.legalName} onChange={(v) => onChange({ legalName: v })} issue={f("legalName")} />
       <TextField
         label="Preferred name"

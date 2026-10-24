@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { COMPANY, EMPLOYEE_EMAIL } from "@/lib/onboarding/data";
 import { useOnboarding } from "@/components/onboarding/OnboardingProvider";
 import { Button } from "@/components/ui/Button";
-import { Banner } from "@/components/onboarding/ui";
+import { Banner, DemoAutofillButton } from "@/components/onboarding/ui";
 import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
 
 const rules = [
@@ -61,15 +61,12 @@ export default function AccountSetupPage() {
       <h1 className="mb-1 text-[20px] font-bold tracking-tight text-text">Create your account</h1>
       <p className="mb-4 text-[13px] text-muted">This is how you&rsquo;ll sign in from now on.</p>
 
-      <button
+      <DemoAutofillButton
         onClick={() => {
           setPassword("Password123");
           setConfirm("Password123");
         }}
-        className="mb-4 self-start rounded-md border border-dashed border-accent-soft-border px-2 py-1 text-[11px] font-semibold text-accent-ink"
-      >
-        Demo: autofill
-      </button>
+      />
 
       {networkError && (
         <Banner tone="critical" className="mb-3">
