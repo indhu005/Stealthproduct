@@ -31,7 +31,8 @@ type Action =
   | { type: "keepBoth" }
   | { type: "pause" }
   | { type: "resume" }
-  | { type: "toggleWebhook"; event: string };
+  | { type: "toggleWebhook"; event: string }
+  | { type: "reset" };
 
 function reducer(state: IntegrationState, action: Action): IntegrationState {
   switch (action.type) {
@@ -100,6 +101,8 @@ function reducer(state: IntegrationState, action: Action): IntegrationState {
       return { ...state, stage: "pilot", activity: [{ id: `log-${Date.now()}`, when: "Just now", text: `Sync resumed by ${PAYROLL_ADMIN}` }, ...state.activity] };
     case "toggleWebhook":
       return { ...state, webhooks: state.webhooks.map((w) => (w.event === action.event ? { ...w, enabled: !w.enabled } : w)) };
+    case "reset":
+      return initialIntegrationState;
     default:
       return state;
   }
@@ -119,6 +122,14 @@ export default function IntegrationPage() {
 
   function toggleEdge(key: keyof EdgeCaseToggles) {
     setEdgeCases((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
+
+  function resetDemo() {
+    dispatch({ type: "reset" });
+    setEdgeCases({ accessExpired: false, retryFails: false, rateLimited: false, connectionFails: false });
+    setActiveIssueId(null);
+    setPauseOpen(false);
+    setTab("test");
   }
 
   const activeIssue: SyncIssue | null = state.test.issues.find((i) => i.recordId === activeIssueId) ?? null;
@@ -151,6 +162,10 @@ export default function IntegrationPage() {
                 {label}
               </button>
             ))}
+            <span className="mx-1 h-4 w-px bg-border" aria-hidden="true" />
+            <Button size="small" variant="secondary" onClick={resetDemo}>
+              Reset demo
+            </Button>
           </div>
         </div>
 
