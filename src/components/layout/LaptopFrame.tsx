@@ -10,51 +10,76 @@ import { useEffect, useRef, useState } from "react";
 // which is what keeps popups anchored to the app frame instead of sliding in
 // from the real screen edge.
 //
-// The canvas is a fixed 1280x800 design — on narrower screens (tablets in
-// particular) it's scaled down to fit via a measured CSS transform rather
-// than reflowing, so nothing inside the fixed-width app layout ever gets
-// clipped or forces its own scrollbar.
+// Below tablet widths, the laptop and phone stack vertically instead of
+// shrinking together side by side — keeps both legible instead of scaling
+// the whole composition down to fit a cramped row.
+const STACK_BREAKPOINT = 1180;
+
 export function LaptopFrame({
   children,
   aside,
 }: {
   children: React.ReactNode;
-  // Rendered as a flex sibling of the laptop bezel — centered and scaled
-  // together with it.
+  // Rendered below the laptop bezel on tablet-width screens, beside it on
+  // wider ones.
   aside?: React.ReactNode;
 }) {
-  const groupRef = useRef<HTMLDivElement>(null);
+  const laptopRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  // CSS `transform: scale()` only changes rendering, not the element's
+  // layout footprint — without this, the flex container still reserves the
+  // full unscaled size, leaving a large gap below the visually-shrunk
+  // laptop. Measuring the natural size and sizing a wrapper to
+  // natural * scale keeps the reserved space matching what's actually drawn.
+  const [naturalSize, setNaturalSize] = useState<{ w: number; h: number } | null>(null);
+  const [stacked, setStacked] = useState(false);
 
   useEffect(() => {
-    const el = groupRef.current;
-    if (!el) return;
+    const laptop = laptopRef.current;
+    if (!laptop) return;
 
-    const updateScale = () => {
+    const update = () => {
       const padding = 64;
-      const availableWidth = window.innerWidth - padding;
-      const availableHeight = window.innerHeight - padding;
-      // scrollWidth/Height reflect the group's natural (unscaled) layout
-      // size — CSS `transform: scale()` doesn't affect layout box metrics.
-      const naturalWidth = el.scrollWidth;
-      const naturalHeight = el.scrollHeight;
-      const next = Math.min(1, availableWidth / naturalWidth, availableHeight / naturalHeight);
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const shouldStack = vw < STACK_BREAKPOINT;
+      setStacked(shouldStack);
+
+      const naturalWidth = laptop.offsetWidth;
+      const naturalHeight = laptop.offsetHeight;
+      setNaturalSize({ w: naturalWidth, h: naturalHeight });
+
+      const next = shouldStack
+        ? // Stacked: scale the laptop to fit the available width only — the
+          // phone sits below it at its own size, and the page scrolls
+          // vertically if the pair doesn't fit the viewport height.
+          Math.min(1, (vw - padding) / naturalWidth)
+        : // Side by side: scale to fit both width (reserving room for the
+          // phone + gap) and height.
+          Math.min(1, (vw - padding - 300) / naturalWidth, (vh - padding) / naturalHeight);
+
       setScale(Number.isFinite(next) && next > 0 ? next : 1);
     };
 
-    updateScale();
-    window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center overflow-hidden bg-[#eceef1] p-8">
+    <div
+      className={`flex min-h-screen w-full gap-10 bg-[#eceef1] p-8 ${
+        stacked ? "flex-col items-center overflow-y-auto py-12" : "items-center justify-center overflow-hidden"
+      }`}
+    >
       <div
-        ref={groupRef}
-        className="flex items-center gap-10"
-        style={{ transform: `scale(${scale})`, transformOrigin: "center center" }}
+        style={naturalSize ? { width: naturalSize.w * scale, height: naturalSize.h * scale } : undefined}
       >
-        <div className="flex flex-col items-center">
+        <div
+          ref={laptopRef}
+          className="flex w-max flex-col items-center"
+          style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
+        >
           <div className="rounded-[20px] bg-[#1a1b1f] p-3 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.45)]">
             <div
               className="relative h-[800px] w-[1280px] overflow-hidden rounded-[8px] bg-bg"
@@ -66,8 +91,8 @@ export function LaptopFrame({
           <div className="h-3 w-[92%] rounded-b-[10px] bg-gradient-to-b from-[#d4d5d9] to-[#c3c4c9]" />
           <div className="h-2 w-[36%] rounded-b-[6px] bg-[#b4b5ba]" />
         </div>
-        {aside}
       </div>
+      {aside}
     </div>
   );
 }
