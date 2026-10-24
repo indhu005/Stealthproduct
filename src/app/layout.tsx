@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Poppins, Geist_Mono } from "next/font/google";
+import { FlowSwitcher } from "@/components/layout/FlowSwitcher";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -38,7 +40,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="min-h-full flex flex-col bg-bg text-text">{children}</body>
+      <body className="min-h-full flex flex-col bg-bg text-text">
+        <Suspense fallback={null}>
+          <FlowSwitcher />
+        </Suspense>
+        {children}
+      </body>
     </html>
   );
 }
