@@ -209,7 +209,7 @@ function SearchAI() {
             setView("browse");
           }}
           placeholder="Search or ask AI"
-          className="flex-1 bg-transparent text-text placeholder:text-faint focus:outline-none"
+          className="min-w-0 flex-1 bg-transparent text-text placeholder:text-faint focus:outline-none"
         />
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none" className="shrink-0 text-accent">
           <path d="M8 2L9.2 6.8L14 8L9.2 9.2L8 14L6.8 9.2L2 8L6.8 6.8L8 2Z" fill="currentColor" />
