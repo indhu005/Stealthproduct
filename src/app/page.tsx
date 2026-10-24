@@ -131,11 +131,14 @@ export default function Home() {
           This is the shared shell and component set — <span className="font-semibold text-text">Button</span>,{" "}
           <span className="font-semibold text-text">Card</span>, <span className="font-semibold text-text">Badge</span>,{" "}
           <span className="font-semibold text-text">Sidebar</span>/<span className="font-semibold text-text">Topbar</span>.
-          The <span className="font-semibold text-text">Payroll</span>, <span className="font-semibold text-text">Time off</span>,
-          and <span className="font-semibold text-text">Onboarding</span> flows above are live. Onboarding is the one
+          The <span className="font-semibold text-text">Payroll</span>, <span className="font-semibold text-text">Time off</span>,{" "}
+          <span className="font-semibold text-text">Onboarding</span>, and{" "}
+          <span className="font-semibold text-text">Integrations</span> flows above are live. Onboarding is the one
           employee-facing, phone-shaped flow — the &ldquo;Onboarding&rdquo; stat and the Jordan Rivera row both open it,
-          starting from the invite email a new hire actually gets. The remaining buttons in this Overview are still
-          disabled: they&rsquo;re part of the static shell, not wired to a flow yet.
+          starting from the invite email a new hire actually gets. Integrations is an admin/IT tool — find it under{" "}
+          <span className="font-semibold text-text">Organization</span> in the sidebar, or in the flow switcher above.
+          The remaining buttons in this Overview are still disabled: they&rsquo;re part of the static shell, not wired
+          to a flow yet.
         </p>
       </Card>
     </AppShell>

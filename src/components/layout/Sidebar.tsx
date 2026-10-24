@@ -99,6 +99,13 @@ const icons = {
       <path d="M5.5 5.5H10.5M5.5 8H10.5M5.5 10.5H8.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
     </svg>
   ),
+  integrations: (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="shrink-0">
+      <circle cx="4.5" cy="4.5" r="2" stroke="currentColor" strokeWidth="1.2" />
+      <circle cx="11.5" cy="11.5" r="2" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M6 6L10 10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  ),
   settings: (
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="shrink-0">
       <circle cx="8" cy="8" r="2" stroke="currentColor" strokeWidth="1.2" />
@@ -120,6 +127,7 @@ const searchablePages: SearchItem[] = [
   { label: "Review payroll", meta: "Page", href: "/payroll" },
   { label: "Time off requests", meta: "Page", href: "/time-off" },
   { label: "Employee onboarding (preview)", meta: "Page", href: "/onboarding/welcome" },
+  { label: "Enterprise integration", meta: "Page", href: "/integration" },
 ];
 
 const searchableEmployees: SearchItem[] = [
@@ -372,6 +380,9 @@ export function Sidebar({ active }: { active?: string }) {
       </NavItem>
 
       <GroupLabel>Organization</GroupLabel>
+      <NavItem href="/integration" icon={icons.integrations} active={active === "integration"}>
+        Integrations
+      </NavItem>
       <NavItem href="/" icon={icons.documents} disabled>
         Documents
       </NavItem>
