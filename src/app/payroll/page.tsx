@@ -1,6 +1,6 @@
 "use client";
 
-import { useReducer, useState } from "react";
+import { useReducer, useRef, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { LaptopFrame } from "@/components/layout/LaptopFrame";
 import { Card } from "@/components/ui/Card";
@@ -91,6 +91,16 @@ export default function PayrollPage() {
   const [panelOpen, setPanelOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const { stage, screen, viaDefault, reminded, formOption } = state;
+
+  // Brief confirmation toast for actions that don't already have an obvious
+  // visual result (a screen/tab change, an updated banner) to point to.
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimeoutRef = useRef<number | null>(null);
+  const showToast = (message: string) => {
+    setToast(message);
+    if (toastTimeoutRef.current) window.clearTimeout(toastTimeoutRef.current);
+    toastTimeoutRef.current = window.setTimeout(() => setToast(null), 2500);
+  };
 
   // Dev's phone is its own small flow — notification → email → sign-in → the
   // DE 4 form itself → confirmation — mirrored from the source prototype.
@@ -246,6 +256,7 @@ export default function PayrollPage() {
                   onClick={() => {
                     dispatch({ type: "devReturnsForm" });
                     setPhoneView("submitted");
+                    showToast("Dev submitted his CA tax form");
                   }}
                   className="mt-3 rounded-md bg-[#2f62f5] px-2.5 py-2 text-center text-[10.5px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-45"
                 >
@@ -329,7 +340,10 @@ export default function PayrollPage() {
         <ReviewScreen
           canPreview={canPreview}
           totalNet={totalNet}
-          onApprove={() => dispatch({ type: "approvePayroll" })}
+          onApprove={() => {
+            dispatch({ type: "approvePayroll" });
+            showToast("Payroll approved — Dev notified by email");
+          }}
           onBack={() => dispatch({ type: "backToDraft" })}
           onGoOverview={() => dispatch({ type: "goToScreen", screen: "overview" })}
         />
@@ -382,7 +396,19 @@ export default function PayrollPage() {
                     </button>
                   ))}
                 </div>
-                <Button className="mt-3 w-full" onClick={() => dispatch({ type: "submitStep2" })}>
+                <Button
+                  className="mt-3 w-full"
+                  onClick={() => {
+                    dispatch({ type: "submitStep2" });
+                    showToast(
+                      formOption === "upload"
+                        ? "Form uploaded"
+                        : formOption === "fill"
+                          ? "Saved — Dev notified to confirm"
+                          : "Request sent to Dev"
+                    );
+                  }}
+                >
                   {formOptions.find((o) => o.id === formOption)?.ctaLabel}
                 </Button>
               </>
@@ -393,10 +419,24 @@ export default function PayrollPage() {
                 <p className="text-[13px] font-semibold">Request sent to Dev. Due Wednesday.</p>
                 <p className="mt-0.5 text-[12px] text-muted">Auto-reminders: Mon and Tue 9:00.</p>
                 <div className="mt-2.5 flex gap-2">
-                  <Button size="small" variant="secondary" onClick={() => dispatch({ type: "remind" })}>
+                  <Button
+                    size="small"
+                    variant="secondary"
+                    onClick={() => {
+                      dispatch({ type: "remind" });
+                      showToast("Reminder sent to Dev");
+                    }}
+                  >
                     Remind
                   </Button>
-                  <Button size="small" variant="secondary" onClick={() => dispatch({ type: "devReturnsForm" })}>
+                  <Button
+                    size="small"
+                    variant="secondary"
+                    onClick={() => {
+                      dispatch({ type: "devReturnsForm" });
+                      showToast("Dev submitted his CA tax form");
+                    }}
+                  >
                     Demo: Dev returns form
                   </Button>
                 </div>
@@ -452,12 +492,25 @@ export default function PayrollPage() {
               dispatch({ type: "approveDefault" });
               setDialogOpen(false);
               setPanelOpen(false);
+              showToast("Default withholding applied");
             }}
           >
             Approve as Omaid
           </Button>
         </div>
       </Dialog>
+
+      {toast && (
+        <div className="fixed inset-x-0 bottom-6 z-50 flex justify-center px-4">
+          <div className="flex items-center gap-2 rounded-lg bg-[#1a1b1f] px-4 py-2.5 text-[12.5px] font-medium text-white shadow-card">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="shrink-0 text-success">
+              <circle cx="8" cy="8" r="7" fill="currentColor" fillOpacity="0.2" />
+              <path d="M5 8.3L7 10.3L11 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {toast}
+          </div>
+        </div>
+      )}
     </AppShell>
     </LaptopFrame>
   );
