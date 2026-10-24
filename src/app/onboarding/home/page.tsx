@@ -1,8 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useOnboarding } from "@/components/onboarding/OnboardingProvider";
-import { FIRST_PAYDAY } from "@/lib/onboarding/data";
+import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
+import { Button } from "@/components/ui/Button";
+import { FIRST_PAYDAY, MANAGER, HR_CONTACT, START_DATE } from "@/lib/onboarding/data";
 
 type Tab = "home" | "pay" | "timeoff" | "benefits";
 
@@ -18,24 +21,46 @@ export function tourTabId(id: Tab | "help") {
 }
 
 export default function EmployeeHomePage() {
+  const router = useRouter();
   const { openHelp } = useOnboarding();
   const [active, setActive] = useState<Tab>("home");
 
   return (
     <div className="relative flex h-full flex-col">
-      <div className="flex-1 overflow-y-auto px-5 pb-20 pt-3">
+      <OnboardingHeader />
+      <div className="flex-1 overflow-y-auto px-5 pb-20">
         {active === "home" ? (
           <>
-            <h1 className="mb-1 text-[19px] font-bold tracking-tight text-text">Welcome, Jordan</h1>
-            <p className="mb-4 text-[13px] text-muted">You&rsquo;re all set up at Acme Studio.</p>
-            <div className="rounded-2xl border border-border bg-accent-soft p-4">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-accent-ink">Next payday</div>
-              <div className="mt-1 text-[20px] font-bold text-text">{FIRST_PAYDAY}</div>
+            <h1 className="mb-4 text-[19px] font-bold tracking-tight text-text">Welcome, Jordan</h1>
+
+            <div className="rounded-2xl bg-accent p-4 text-white">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-white/70">Next payday</div>
+              <div className="mt-1 text-[22px] font-bold">{FIRST_PAYDAY}</div>
+              {/* Unknown values show "—", never $0.00 (spec principle) — pay isn't calculable until HR review finishes. */}
+              <div className="mt-0.5 text-[12.5px] text-white/80">Estimated pay: &mdash;</div>
             </div>
-            <div className="mt-4 rounded-2xl border border-dashed border-border p-3 text-[12.5px] leading-relaxed text-muted">
-              This is a concept stub for the post-onboarding home screen — just enough to give the tour below something real to
-              point at.
+
+            <div className="mt-3 rounded-xl border border-success/30 bg-success-soft p-3 text-[12.5px] text-success">
+              <span aria-hidden="true">✓</span> Onboarding submitted. HR will review by Nov 2.
             </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-2.5">
+              {[
+                { label: "First day", value: START_DATE.split(",").slice(0, 2).join(",") },
+                { label: "Manager", value: MANAGER },
+                { label: "HR contact", value: HR_CONTACT },
+                { label: "Time off", value: "—" },
+              ].map((item) => (
+                <div key={item.label} className="rounded-xl border border-border bg-surface p-3">
+                  <div className="text-[11px] text-faint">{item.label}</div>
+                  <div className="mt-0.5 text-[13px] font-semibold text-text">{item.value}</div>
+                </div>
+              ))}
+            </div>
+
+            <Button variant="secondary" className="mt-4 w-full" onClick={() => router.push("/onboarding/review")}>
+              Review my onboarding
+            </Button>
           </>
         ) : (
           <div className="mt-10 text-center text-[13px] text-muted">

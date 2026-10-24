@@ -6,47 +6,69 @@ import type { AiSuggestion, OnboardingFormData } from "./types";
 // glance exactly what it can and can't say.
 
 interface FieldHelp {
+  label: string;
   explain: string;
   example?: string;
+  askAnswer?: string;
+  source?: string;
+  disclaimer?: string;
 }
+
+const TAX_DISCLAIMER = "This is general information, not tax advice. Your choice is yours to make.";
 
 const FIELD_HELP: Record<string, FieldHelp> = {
   filingStatus: {
+    label: "Filing status",
     explain: "This tells your employer how much federal tax to hold back from each paycheck.",
     example: "If you're single with no dependents, you'd usually choose Single or Married filing separately.",
+    askAnswer:
+      "Your filing status sets the starting point for withholding. You pick the one that matches your situation; Bolto can't choose for you.",
+    source: "IRS Form W-4 instructions",
+    disclaimer: TAX_DISCLAIMER,
   },
   multipleJobs: {
+    label: "Multiple jobs",
     explain: "Choose yes if you have another job or your spouse works.",
     example: "Two jobs? Select yes. This helps avoid owing tax later.",
+    disclaimer: TAX_DISCLAIMER,
   },
   routingNumber: {
-    explain: "A 9-digit number that identifies your bank.",
+    label: "Routing number",
+    explain: "A 9-digit number that identifies your bank. I never see the numbers you type.",
     example: "It's printed at the bottom left of a check. Format: 9 digits.",
   },
   accountType: {
+    label: "Account type",
     explain: "Checking is the most common for paychecks.",
   },
   emergencyContactName: {
+    label: "Emergency contact",
     explain: "Someone we can reach if there's an emergency.",
     example: "Name, relationship, and a phone number.",
   },
   emergencyContactPhone: {
+    label: "Emergency contact",
     explain: "Someone we can reach if there's an emergency.",
     example: "Name, relationship, and a phone number.",
   },
   citizenshipStatus: {
+    label: "Citizenship status",
     explain: "This confirms your authorization to work in the US — it doesn't affect your pay or benefits.",
   },
   dependents: {
+    label: "Dependents",
     explain: "Each dependent you claim reduces the tax withheld from your paycheck.",
+    disclaimer: TAX_DISCLAIMER,
   },
   extraWithholding: {
+    label: "Extra withholding",
     explain: "An optional flat amount withheld on top of the standard calculation, if you want extra held back.",
+    disclaimer: TAX_DISCLAIMER,
   },
 };
 
 export function getFieldHelp(fieldId: string): FieldHelp {
-  return FIELD_HELP[fieldId] ?? { explain: "I'm not sure about this one. Ask HR." };
+  return FIELD_HELP[fieldId] ?? { label: "This field", explain: "I'm not sure about this one. Ask HR." };
 }
 
 // --- Review-screen consistency checks ---------------------------------------
@@ -95,7 +117,7 @@ export function generateReviewSuggestions(forms: OnboardingFormData): AiSuggesti
       fieldId: "zip",
       kind: "consistency_check",
       text: `Your ZIP code (${safe.zip}) matches ${safe.city}, ${safe.state}.`,
-      actions: ["dismiss"],
+      actions: ["use_this", "edit", "dismiss"],
       sensitive: false,
     });
   }

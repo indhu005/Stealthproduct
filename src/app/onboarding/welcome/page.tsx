@@ -23,7 +23,9 @@ export default function WelcomeEmailPage() {
 
         {expired ? (
           <div className="mt-4">
-            <Banner tone="warning">This link has expired.</Banner>
+            <Banner tone="warning">
+              <span className="font-semibold">This link has expired.</span> Request a new one and we&rsquo;ll email it to you.
+            </Banner>
             <Button className="mt-3 w-full" onClick={() => setExpired(false)}>
               Request a new link
             </Button>

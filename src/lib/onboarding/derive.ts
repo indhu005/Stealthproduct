@@ -16,11 +16,11 @@ export const STEP_ORDER: StepId[] = ["personal", "tax", "deposit", "eligibility"
 
 export const STEP_META: Record<StepId, { title: string; minutes: number }> = {
   personal: { title: "Personal details", minutes: 2 },
-  tax: { title: "Tax withholding (federal W-4)", minutes: 4 },
-  deposit: { title: "Direct deposit", minutes: 3 },
-  eligibility: { title: "Work eligibility (I-9, Section 1)", minutes: 3 },
+  tax: { title: "Tax withholding", minutes: 3 },
+  deposit: { title: "Direct deposit", minutes: 2 },
+  eligibility: { title: "Work eligibility", minutes: 4 },
   benefits: { title: "Benefits", minutes: 2 },
-  policies: { title: "Policies and handbook", minutes: 1 },
+  policies: { title: "Policies and handbook", minutes: 2 },
 };
 
 function blocking(fieldId: string, message: string, example?: string): Issue {
@@ -163,6 +163,10 @@ export function progressCount(steps: Record<StepId, Step>): { done: number; tota
   const total = STEP_ORDER.length;
   const done = STEP_ORDER.filter((id) => steps[id].status === "done").length;
   return { done, total };
+}
+
+export function remainingMinutes(steps: Record<StepId, Step>): number {
+  return STEP_ORDER.filter((id) => steps[id].status !== "done").reduce((sum, id) => sum + steps[id].minutes, 0);
 }
 
 export function remainingStepTitles(steps: Record<StepId, Step>): string[] {

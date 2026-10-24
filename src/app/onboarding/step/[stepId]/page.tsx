@@ -6,6 +6,8 @@ import { useOnboarding } from "@/components/onboarding/OnboardingProvider";
 import { STEP_ORDER, validateStep } from "@/lib/onboarding/derive";
 import type { StepId } from "@/lib/onboarding/types";
 import { Button } from "@/components/ui/Button";
+import { Banner } from "@/components/onboarding/ui";
+import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
 import { PersonalStep } from "@/components/onboarding/steps/PersonalStep";
 import { TaxStep } from "@/components/onboarding/steps/TaxStep";
 import { DepositStep } from "@/components/onboarding/steps/DepositStep";
@@ -15,8 +17,8 @@ import { PoliciesStep } from "@/components/onboarding/steps/PoliciesStep";
 
 const intro: Record<StepId, string> = {
   personal: "Let's start with the basics.",
-  tax: "This determines how much federal tax is withheld from each paycheck.",
-  deposit: "Where should we send your pay?",
+  tax: "A few federal W-4 questions so your paycheck holds back the right amount.",
+  deposit: "Where should we send your pay? Sample values below are fake.",
   eligibility: "Confirms you're authorized to work in the US.",
   benefits: "Choose your coverage, or decide later.",
   policies: "A few documents to review and acknowledge.",
@@ -36,6 +38,7 @@ export default function StepPage() {
   // an untouched or in-progress step shouldn't flash errors before the
   // person has had a chance to fill it in (spec's needs_attention rule).
   const attempted = (state.forms[stepId] as { attempted: boolean }).attempted;
+  const blockingCount = step.issues.filter((i) => i.severity === "blocking").length;
   const issues = attempted ? step.issues : step.issues.filter((i) => i.severity === "suggestion");
 
   function goNext() {
@@ -52,17 +55,28 @@ export default function StepPage() {
   }
 
   return (
-    <div className="flex h-full flex-col px-5 pb-5 pt-2">
-      <div className="mb-1 flex items-center justify-between">
-        <span className="text-[11.5px] font-semibold uppercase tracking-wider text-faint">
-          Step {index + 1} of {STEP_ORDER.length}
-        </span>
-        {state.savedAt && <span className="text-[11px] text-faint">Saved just now</span>}
-      </div>
-      <h1 className="mb-1 text-[19px] font-bold tracking-tight text-text">{step.title}</h1>
-      <p className="mb-4 text-[13px] text-muted">{intro[stepId]}</p>
+    <div className="flex h-full flex-col">
+      <OnboardingHeader />
+      <div className="flex-1 overflow-y-auto px-5 pb-2">
+        <div className="mb-3 flex items-center justify-between">
+          <button onClick={goBack} className="text-[12.5px] font-semibold text-accent-ink hover:underline">
+            &lsaquo; Back
+          </button>
+          <span className="text-[11.5px] text-faint">
+            Step {index + 1} of {STEP_ORDER.length} {state.savedAt && "· Saved just now"}
+          </span>
+        </div>
+        <h1 className="mb-1 text-[19px] font-bold tracking-tight text-text">{step.title}</h1>
+        <p className="mb-4 text-[13px] text-muted">{intro[stepId]}</p>
 
-      <div className="flex-1 overflow-y-auto pb-2">
+        {attempted && blockingCount > 0 && (
+          <Banner tone="warning" className="mb-4">
+            <span className="font-semibold">
+              ! Fix {blockingCount} item{blockingCount === 1 ? "" : "s"} to continue.
+            </span>
+          </Banner>
+        )}
+
         {stepId === "personal" && (
           <PersonalStep
             fields={state.forms.personal}
@@ -103,16 +117,14 @@ export default function StepPage() {
         )}
       </div>
 
-      <div className="shrink-0 border-t border-border pt-3">
-        <div className="flex gap-2">
-          <Button variant="secondary" onClick={goBack} className="flex-1">
-            Back
-          </Button>
-          <Button onClick={goNext} className="flex-1">
-            Save and continue
-          </Button>
-        </div>
-        <button onClick={() => router.push("/onboarding")} className="mt-2 w-full text-center text-[12px] font-semibold text-faint hover:underline">
+      <div className="shrink-0 border-t border-border p-4">
+        <Button onClick={goNext} className="w-full">
+          Save and continue
+        </Button>
+        <button
+          onClick={() => router.push("/onboarding")}
+          className="mt-2 w-full text-center text-[12px] font-semibold text-accent-ink hover:underline"
+        >
           Save and finish later
         </button>
       </div>

@@ -3,34 +3,33 @@
 import { useRouter } from "next/navigation";
 import { useOnboarding } from "@/components/onboarding/OnboardingProvider";
 import { Button } from "@/components/ui/Button";
-import { FIRST_PAYDAY, START_DATE } from "@/lib/onboarding/data";
+import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
 
 const timeline = [
-  { label: "Today", detail: "Forms submitted", done: true },
-  { label: "By Nov 2", detail: "HR review", done: false },
-  { label: "Nov 2", detail: "First day", done: false },
-  { label: "Nov 13", detail: "First payday", done: false },
-];
+  { label: "Today", detail: "Forms submitted", tone: "success" },
+  { label: "By Nov 2", detail: "HR review", tone: "accent" },
+  { label: "Nov 2", detail: "First day", tone: "muted" },
+  { label: "Nov 13", detail: "First payday", tone: "muted" },
+] as const;
+
+const dotClasses = { success: "bg-success", accent: "bg-accent", muted: "bg-surface-sunken border border-border" } as const;
 
 export default function DonePage() {
   const router = useRouter();
   const { setTourOpen } = useOnboarding();
 
   return (
-    <div className="flex h-full flex-col items-center px-5 pb-5 pt-10 text-center">
+    <div className="flex h-full flex-col">
+      <OnboardingHeader />
+      <div className="flex flex-1 flex-col items-center px-5 pb-2 pt-4 text-center">
       <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-success-soft text-[24px] text-success">✓</div>
-      <h1 className="mb-1 text-[20px] font-bold tracking-tight text-text">You&rsquo;re all set, Jordan</h1>
-      <p className="mb-6 text-[13px] text-muted">
-        Your start date is {START_DATE}. Your first payday is {FIRST_PAYDAY}.
-      </p>
+      <h1 className="mb-6 text-[20px] font-bold tracking-tight text-text">You&rsquo;re all set, Jordan</h1>
 
       <div className="mb-8 w-full text-left">
         {timeline.map((t, i) => (
           <div key={t.label} className="flex gap-3">
             <div className="flex flex-col items-center">
-              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${t.done ? "bg-success text-white" : "border border-border bg-surface-sunken text-faint"}`}>
-                {t.done ? "✓" : i + 1}
-              </span>
+              <span className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${dotClasses[t.tone]}`} aria-hidden="true" />
               {i !== timeline.length - 1 && <span className="my-0.5 h-8 w-px bg-border" />}
             </div>
             <div className="pb-4">
@@ -55,6 +54,7 @@ export default function DonePage() {
         >
           Take the tour
         </Button>
+      </div>
       </div>
     </div>
   );

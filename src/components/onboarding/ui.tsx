@@ -1,17 +1,20 @@
 import Link from "next/link";
 import type { StepId, StepStatus } from "@/lib/onboarding/types";
 
-export function ProgressBar({ done, total }: { done: number; total: number }) {
+export function ProgressBar({ done, total, minutesLeft }: { done: number; total: number; minutesLeft?: number }) {
   const pct = total === 0 ? 0 : Math.round((done / total) * 100);
   return (
     <div>
+      {/* Progress is stated in text too — never rely on the bar alone (spec section 9). */}
+      <div className="mb-1.5 flex items-center justify-between text-[12px] text-muted">
+        <span>
+          {done} of {total} done
+        </span>
+        {minutesLeft !== undefined && <span>{minutesLeft === 0 ? "Done" : `${minutesLeft} min left`}</span>}
+      </div>
       <div className="h-2 w-full overflow-hidden rounded-full bg-surface-sunken">
         <div className="h-full rounded-full bg-accent transition-all" style={{ width: `${pct}%` }} />
       </div>
-      {/* Progress is stated in text too — never rely on the bar alone (spec section 9). */}
-      <p className="mt-1.5 text-[12px] text-muted">
-        {done} of {total} done
-      </p>
     </div>
   );
 }
@@ -53,23 +56,29 @@ export function Banner({
   return <div className={`rounded-xl border p-3 text-[12.5px] leading-relaxed ${bannerTones[tone]} ${className}`}>{children}</div>;
 }
 
-export function StepRow({ stepId, title, minutes, status }: { stepId: StepId; title: string; minutes: number; status: StepStatus }) {
+export function StepRow({
+  stepId,
+  index,
+  title,
+  minutes,
+  status,
+}: {
+  stepId: StepId;
+  index: number;
+  title: string;
+  minutes: number;
+  status: StepStatus;
+}) {
   return (
     <Link
       href={`/onboarding/step/${stepId}`}
-      className="flex items-center gap-3 border-b border-border px-1 py-3.5 last:border-b-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:-outline-offset-2"
+      className="mb-2 flex items-center gap-3 rounded-xl border border-border bg-surface p-3 last:mb-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:-outline-offset-2"
     >
       <span
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[13px] font-bold ${
-          status === "done"
-            ? "border-success bg-success-soft text-success"
-            : status === "needs_attention"
-              ? "border-warning bg-warning-soft text-warning"
-              : "border-border bg-surface-sunken text-faint"
-        }`}
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft text-[12.5px] font-bold text-accent-ink"
         aria-hidden="true"
       >
-        {status === "done" ? "✓" : statusMeta[status].icon}
+        {index}
       </span>
       <div className="min-w-0 flex-1">
         <div className="text-[13.5px] font-semibold text-text">{title}</div>
@@ -83,6 +92,25 @@ export function StepRow({ stepId, title, minutes, status }: { stepId: StepId; ti
   );
 }
 
+export function AiCard({ prompt, caption, ctaLabel, onClick }: { prompt: string; caption: string; ctaLabel: string; onClick: () => void }) {
+  return (
+    <div className="mb-4 rounded-xl border border-accent-soft-border bg-accent-soft/40 p-3">
+      <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-accent-ink">
+        <SparkleIcon />
+        Bolto AI
+      </div>
+      <p className="text-[12.5px] leading-relaxed text-text">{prompt}</p>
+      <button
+        onClick={onClick}
+        className="mt-2.5 w-full rounded-lg bg-accent px-3 py-2 text-[12.5px] font-semibold text-white hover:bg-accent-hover"
+      >
+        {ctaLabel}
+      </button>
+      <p className="mt-1.5 text-[11px] text-faint">{caption}</p>
+    </div>
+  );
+}
+
 export function SparkleIcon({ className = "" }: { className?: string }) {
   return (
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className={`shrink-0 ${className}`} aria-hidden="true">
@@ -93,33 +121,37 @@ export function SparkleIcon({ className = "" }: { className?: string }) {
 
 export function SuggestionCard({
   text,
+  positive = false,
   onUseThis,
   onEdit,
   onDismiss,
 }: {
   text: string;
+  positive?: boolean;
   onUseThis?: () => void;
   onEdit?: () => void;
   onDismiss: () => void;
 }) {
   return (
-    <div className="rounded-xl border border-accent-soft-border bg-accent-soft/40 p-3">
+    <div className="rounded-xl border border-border bg-surface p-3">
       <div className="flex items-start gap-2">
-        <SparkleIcon className="mt-0.5 text-accent-ink" />
+        <span aria-hidden="true" className={`mt-0.5 text-[13px] font-bold ${positive ? "text-success" : "text-warning"}`}>
+          {positive ? "✓" : "!"}
+        </span>
         <p className="flex-1 text-[12.5px] leading-relaxed text-text">{text}</p>
       </div>
-      <div className="mt-2 flex items-center gap-3 pl-5 text-[12px] font-semibold">
+      <div className="mt-2 flex items-center gap-2">
         {onUseThis && (
-          <button onClick={onUseThis} className="text-accent-ink hover:underline">
+          <button onClick={onUseThis} className="rounded-lg bg-accent px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-accent-hover">
             Use this
           </button>
         )}
         {onEdit && (
-          <button onClick={onEdit} className="text-muted hover:underline">
+          <button onClick={onEdit} className="rounded-lg border border-border px-3 py-1.5 text-[12px] font-semibold text-text hover:bg-surface-sunken">
             Edit
           </button>
         )}
-        <button onClick={onDismiss} className="text-faint hover:underline">
+        <button onClick={onDismiss} className="rounded-lg border border-border px-3 py-1.5 text-[12px] font-semibold text-text hover:bg-surface-sunken">
           Dismiss
         </button>
       </div>

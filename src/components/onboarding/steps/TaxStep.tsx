@@ -1,7 +1,7 @@
 import type { Issue, TaxFields } from "@/lib/onboarding/types";
 import { issueFor } from "@/lib/onboarding/derive";
 import { RadioGroupField, TextField, CheckboxField } from "@/components/onboarding/Field";
-import { Banner } from "@/components/onboarding/ui";
+import { AiCard, Banner } from "@/components/onboarding/ui";
 
 export function TaxStep({
   fields,
@@ -17,9 +17,19 @@ export function TaxStep({
   const f = (id: string) => issueFor(issues, id);
   return (
     <>
-      <Banner tone="info" className="mb-4">
+      <Banner tone="neutral" className="mb-4">
+        <span className="mr-1" aria-hidden="true">
+          ℹ
+        </span>
         Texas doesn&rsquo;t have a state income tax, so there&rsquo;s no state form for you to complete.
       </Banner>
+
+      <AiCard
+        prompt="Not sure which filing status fits? I can explain each option in plain language."
+        ctaLabel="Explain filing status"
+        caption="I explain and give examples. I never choose for you."
+        onClick={() => onNotSure("filingStatus")}
+      />
 
       <RadioGroupField
         label="Filing status"
