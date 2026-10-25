@@ -27,5 +27,13 @@ export function payrollBlocked(state: IntegrationState): boolean {
 }
 
 export function canGoLive(state: IntegrationState): boolean {
-  return !payrollBlocked(state) && !!state.approver;
+  return !payrollBlocked(state) && !!state.approver && state.rollbackAcknowledged;
+}
+
+export function unresolvedMappings(state: IntegrationState) {
+  return state.mappings.filter((m) => m.status === "needs_review");
+}
+
+export function canRunTestSync(state: IntegrationState): boolean {
+  return unresolvedMappings(state).length === 0;
 }

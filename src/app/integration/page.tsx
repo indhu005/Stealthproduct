@@ -10,7 +10,11 @@ import { COMPANY, INTEGRATION_ADMIN, INTEGRATION_ADMIN_EMAIL, PAYROLL_ADMIN, SYS
 import { TestSyncScreen } from "@/components/integration/TestSyncScreen";
 import { MonitorScreen } from "@/components/integration/MonitorScreen";
 import { ResolvePanel } from "@/components/integration/ResolvePanel";
-import { StaticStepCard } from "@/components/integration/StaticStepCard";
+import { ConnectScreen } from "@/components/integration/ConnectScreen";
+import { PermissionsScreen } from "@/components/integration/PermissionsScreen";
+import { MapFieldsScreen } from "@/components/integration/MapFieldsScreen";
+import { GoLiveScreen } from "@/components/integration/GoLiveScreen";
+import { canGoLive } from "@/lib/integration/derive";
 
 type Tab = "connect" | "permissions" | "mapfields" | "test" | "golive" | "monitor";
 
@@ -32,6 +36,12 @@ type Action =
   | { type: "pause" }
   | { type: "resume" }
   | { type: "toggleWebhook"; event: string }
+  | { type: "connectSystem"; system: string }
+  | { type: "toggleEntity"; id: string }
+  | { type: "resolveMapping"; source: string }
+  | { type: "pilotStep"; delta: number }
+  | { type: "setApprover"; name: string }
+  | { type: "toggleAck" }
   | { type: "reset" };
 
 function reducer(state: IntegrationState, action: Action): IntegrationState {
@@ -101,6 +111,25 @@ function reducer(state: IntegrationState, action: Action): IntegrationState {
       return { ...state, stage: "pilot", activity: [{ id: `log-${Date.now()}`, when: "Just now", text: `Sync resumed by ${PAYROLL_ADMIN}` }, ...state.activity] };
     case "toggleWebhook":
       return { ...state, webhooks: state.webhooks.map((w) => (w.event === action.event ? { ...w, enabled: !w.enabled } : w)) };
+    case "connectSystem":
+      return {
+        ...state,
+        connectedSystem: action.system,
+        activity: [{ id: `log-${Date.now()}`, when: "Just now", text: `Connected to ${action.system} in sandbox` }, ...state.activity],
+      };
+    case "toggleEntity":
+      return { ...state, entities: state.entities.map((e) => (e.id === action.id ? { ...e, included: !e.included } : e)) };
+    case "resolveMapping":
+      return {
+        ...state,
+        mappings: state.mappings.map((m) => (m.source === action.source ? { ...m, status: "matched" as const } : m)),
+      };
+    case "pilotStep":
+      return { ...state, pilotSize: Math.max(10, state.pilotSize + action.delta) };
+    case "setApprover":
+      return { ...state, approver: action.name };
+    case "toggleAck":
+      return { ...state, rollbackAcknowledged: !state.rollbackAcknowledged };
     case "reset":
       return initialIntegrationState;
     default:
@@ -188,26 +217,25 @@ export default function IntegrationPage() {
         </div>
 
         {tab === "connect" && (
-          <StaticStepCard
-            title="Connect your ERP"
-            summary={`Signed in as ${INTEGRATION_ADMIN_EMAIL} via company login. Connected to ${SYSTEM_NAME} in sandbox — nothing touches live payroll at this stage.`}
-            nextLabel="Continue to permissions"
+          <ConnectScreen
+            connectedSystem={state.connectedSystem}
+            connectionFails={edgeCases.connectionFails}
+            onConnect={(system) => dispatch({ type: "connectSystem", system })}
             onContinue={() => setTab("permissions")}
           />
         )}
         {tab === "permissions" && (
-          <StaticStepCard
-            title="Review permissions"
-            summary={`Reads: employee records, pay groups, work locations. Writes: payroll results, pay statements. Access can be revoked anytime; every change is logged and kept for ${state.auditRetentionMonths} months. All 3 entities included (US, Canada, UK).`}
-            nextLabel="Approve and continue"
+          <PermissionsScreen
+            entities={state.entities}
+            auditRetentionMonths={state.auditRetentionMonths}
+            onToggleEntity={(id) => dispatch({ type: "toggleEntity", id })}
             onContinue={() => setTab("mapfields")}
           />
         )}
         {tab === "mapfields" && (
-          <StaticStepCard
-            title="Map fields"
-            summary="38 fields matched automatically with high confidence. 2 fields needed review and were resolved before the test sync ran."
-            nextLabel="Run a test sync"
+          <MapFieldsScreen
+            mappings={state.mappings}
+            onResolve={(source) => dispatch({ type: "resolveMapping", source })}
             onContinue={() => setTab("test")}
           />
         )}
@@ -215,11 +243,15 @@ export default function IntegrationPage() {
           <TestSyncScreen state={state} onReview={(id) => setActiveIssueId(id)} onGoLive={() => setTab("golive")} />
         )}
         {tab === "golive" && (
-          <StaticStepCard
-            title="Go live"
-            summary={`Mapping complete, blocking issues resolved, approver ${PAYROLL_ADMIN} chosen, rollback plan acknowledged. Pilot started with ${state.pilotSize} employees (Austin office).`}
-            nextLabel="Start pilot"
-            onContinue={() => setTab("monitor")}
+          <GoLiveScreen
+            pilotSize={state.pilotSize}
+            approver={state.approver}
+            rollbackAcknowledged={state.rollbackAcknowledged}
+            canStart={canGoLive(state)}
+            onPilotStep={(delta) => dispatch({ type: "pilotStep", delta })}
+            onSetApprover={(name) => dispatch({ type: "setApprover", name })}
+            onToggleAck={() => dispatch({ type: "toggleAck" })}
+            onStartPilot={() => setTab("monitor")}
           />
         )}
         {tab === "monitor" && (

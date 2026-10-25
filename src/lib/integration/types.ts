@@ -49,6 +49,7 @@ export interface ActivityEntry {
 
 export interface IntegrationState {
   stage: ConnectionStage;
+  connectedSystem: string | null;
   entities: Entity[];
   mappings: FieldMapping[];
   test: {
@@ -57,6 +58,7 @@ export interface IntegrationState {
   };
   pilotSize: number;
   approver: string;
+  rollbackAcknowledged: boolean;
   lastSyncAt: string;
   webhooks: Webhook[];
   auditRetentionMonths: number;

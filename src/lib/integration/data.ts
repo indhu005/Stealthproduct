@@ -8,14 +8,67 @@ export const EMPLOYEE_COUNT = 1240;
 export const NEXT_PAYROLL = "Fri, Nov 13";
 export const SYSTEM_NAME = "Example ERP";
 
+export const INTEGRATION_SYSTEMS = [
+  { id: "example-erp", category: "ERP", name: "Example ERP" },
+  { id: "meridian-hris", category: "HRIS", name: "Meridian HRIS" },
+  { id: "atlas-payroll", category: "Payroll", name: "Atlas Payroll" },
+];
+
+export const INTEGRATION_APPROVERS = [PAYROLL_ADMIN, "Jordan Avery"];
+
+export const SCOPE_GROUPS = [
+  {
+    title: "READS",
+    items: [
+      { id: "read-employees", name: "Employee records", why: "Names, roles, work locations", locked: true },
+      { id: "read-paygroups", name: "Pay groups", why: "Needed to match payroll cycles", locked: true },
+      { id: "read-locations", name: "Work locations", why: "Determines tax jurisdiction", locked: true },
+    ],
+  },
+  {
+    title: "WRITES",
+    items: [
+      { id: "write-results", name: "Payroll results", why: "Posts completed runs back to your system", locked: false },
+      { id: "write-statements", name: "Pay statements", why: "Lets employees see pay stubs in your system", locked: false },
+    ],
+  },
+];
+
+export const MATCHED_FIELD_COUNT = 38;
+
+export const MATCHED_FIELD_SAMPLE = [
+  { source: "emp_first_name", target: "First name" },
+  { source: "emp_last_name", target: "Last name" },
+  { source: "hire_dt", target: "Hire date" },
+  { source: "pay_grp_cd", target: "Pay group" },
+  { source: "mgr_emp_id", target: "Manager" },
+  { source: "work_loc_cd", target: "Work location" },
+];
+
 export const initialIntegrationState: IntegrationState = {
   stage: "pilot",
+  connectedSystem: SYSTEM_NAME,
   entities: [
     { id: "us", name: "US", included: true },
     { id: "ca", name: "Canada", included: true },
     { id: "uk", name: "UK", included: true },
   ],
-  mappings: [],
+  mappings: [
+    {
+      source: "job_title_txt",
+      target: "Job title",
+      confidence: "review",
+      status: "needs_review",
+      note: "Longer than 60 characters for some records",
+    },
+    {
+      source: "phone_num",
+      target: "Phone number",
+      confidence: "review",
+      status: "needs_review",
+      note: "Format doesn't match expected pattern",
+    },
+  ],
   test: {
     checked: 1240,
     issues: [
@@ -32,6 +85,7 @@ export const initialIntegrationState: IntegrationState = {
   },
   pilotSize: 50,
   approver: PAYROLL_ADMIN,
+  rollbackAcknowledged: true,
   lastSyncAt: "6 min ago",
   webhooks: [
     { event: "employee.synced", enabled: true, lastDelivery: "ok" },
