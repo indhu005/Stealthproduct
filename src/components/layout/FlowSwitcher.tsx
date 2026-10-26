@@ -24,7 +24,7 @@ export function FlowSwitcher() {
   useEffect(() => setMounted(true), []);
 
   return (
-    <div className="flex justify-center pb-1 pt-4">
+    <div className="flex items-center justify-center gap-2 pb-1 pt-4">
       <nav aria-label="Switch flow" className="flex items-center gap-1 rounded-full border border-border bg-surface p-1 shadow-card">
         {flows.map((f) => {
           const active = mounted && f.match(pathname);
@@ -42,6 +42,14 @@ export function FlowSwitcher() {
           );
         })}
       </nav>
+      <a
+        href="https://claude.ai/artifact/XPBC2Md1rZJuy7fKT414mY#slide-3dd33bdac6c2"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="rounded-full border border-border bg-surface px-3.5 py-2 text-[12.5px] font-semibold text-muted shadow-card transition-colors hover:bg-surface-sunken hover:text-text"
+      >
+        To presentation →
+      </a>
     </div>
   );
 }
