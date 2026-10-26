@@ -17,8 +17,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bolto — Redesign & Flows",
-  description: "Interactive dashboard redesign and product flows for Bolto, built for an interview walkthrough.",
+  title: "Bolto Concept — Dashboard Redesign and Flows",
+  description:
+    "An unofficial concept redesign of Bolto's admin dashboard, with four interactive flows: payroll blocker resolution, time off approval, employee onboarding, and enterprise integration.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 const themeInitScript = `

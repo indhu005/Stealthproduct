@@ -19,6 +19,42 @@ export default function Home() {
     <AppShell active="overview">
       <Topbar title="Welcome back, Omaid" />
 
+      <Card className="mb-4.5 p-4">
+        <div className="mb-3 font-mono text-[11px] uppercase tracking-wider text-faint">Start here</div>
+        <div className="grid grid-cols-3 gap-3">
+          <Link
+            href="/payroll"
+            className="rounded-lg border border-border p-3 transition-colors hover:bg-surface-sunken focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+          >
+            <div className="mb-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent-soft text-[11px] font-bold text-accent-ink">
+              1
+            </div>
+            <div className="text-[13px] font-semibold">Payroll blocker</div>
+            <div className="mt-0.5 text-[12px] text-muted">Resolve a blocked payroll run</div>
+          </Link>
+          <Link
+            href="/integration"
+            className="rounded-lg border border-border p-3 transition-colors hover:bg-surface-sunken focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+          >
+            <div className="mb-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent-soft text-[11px] font-bold text-accent-ink">
+              2
+            </div>
+            <div className="text-[13px] font-semibold">Integration</div>
+            <div className="mt-0.5 text-[12px] text-muted">Connect and monitor an HRIS sync</div>
+          </Link>
+          <Link
+            href="/onboarding/welcome"
+            className="rounded-lg border border-border p-3 transition-colors hover:bg-surface-sunken focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+          >
+            <div className="mb-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent-soft text-[11px] font-bold text-accent-ink">
+              3
+            </div>
+            <div className="text-[13px] font-semibold">Onboarding</div>
+            <div className="mt-0.5 text-[12px] text-muted">Walk through a new hire&rsquo;s own view</div>
+          </Link>
+        </div>
+      </Card>
+
       <Card className="mb-2 flex items-end justify-between gap-6 bg-accent-soft p-6">
         <div>
           <div className="mb-2.5 font-mono text-[11px] uppercase tracking-wider text-accent-ink">

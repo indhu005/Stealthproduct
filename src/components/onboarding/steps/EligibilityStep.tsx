@@ -85,7 +85,7 @@ export function EligibilityStep({
       />
 
       <button onClick={onHelp} className="text-[12.5px] font-semibold text-accent-ink hover:underline">
-        Official instructions &amp; Contact HR
+        Official instructions & Contact HR
       </button>
     </>
   );
