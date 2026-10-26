@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Poppins, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { FlowSwitcher } from "@/components/layout/FlowSwitcher";
 import "./globals.css";
 
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <FlowSwitcher />
         </Suspense>
         {children}
+        <Analytics />
       </body>
     </html>
   );
